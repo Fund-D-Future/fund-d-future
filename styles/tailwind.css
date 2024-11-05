@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.radial-gradient-overlay {
+    background-color: whitesmoke;
+    background: radial-gradient(69.03% 136.51% at -8.3% 43.9%, rgba(0, 207, 104, 0.2) 0%, rgba(0, 207, 104, 0.2) 0%, rgba(255, 255, 255, 0.2) 64%, rgba(255, 255, 255, 0.2) 100%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+}
+

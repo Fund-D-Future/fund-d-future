@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { pick, omit } = require("lodash")
-const colors = require("tailwindcss/colors")
 const defaultTheme = require("tailwindcss/defaultTheme")
 
 /** @type {import('tailwindcss').Config} */
@@ -27,7 +25,7 @@ module.exports = {
           600: "#2563eb",
           700: "#1d4ed8",
           800: "#1e40af",
-          900: "#1e3a8a",
+          900: "#999999",
         },
       },
       fontFamily: {

@@ -13,6 +13,7 @@ const config = withPlugins([[withBundleAnalyzer({ enabled: env.ANALYZE })]], {
     },
   },
   experimental: { instrumentationHook: true },
+
   rewrites() {
     return [
       { source: "/healthz", destination: "/api/health" },
