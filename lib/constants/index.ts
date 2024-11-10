@@ -1,1 +1,0 @@
-export { RoutesMap } from './routes';

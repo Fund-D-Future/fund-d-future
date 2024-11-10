@@ -4,7 +4,7 @@ import { ArrowLeft, ChevronRight } from "lucide-react"
 import { Heading, Text } from "@radix-ui/themes"
 import Link from "next/link"
 import { Donation, GradStudent } from "components/icons"
-import { RoutesMap } from "lib/constants"
+import { RoutesMap } from "types/routes"
 
 export const metadata: Metadata = {
   title: "FundDFuture | Onboarding",

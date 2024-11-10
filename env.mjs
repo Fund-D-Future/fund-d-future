@@ -7,9 +7,14 @@ export const env = createEnv({
       .enum(["true", "false"])
       .optional()
       .transform((value) => value === "true"),
+    IRON_SESSION_PASSWORD: z.string(),
   },
-  client: {},
+  client: {
+    API_URL: z.string().url(),
+  },
   runtimeEnv: {
     ANALYZE: process.env.ANALYZE,
+    IRON_SESSION_PASSWORD: process.env.IRON_SESSION_PASSWORD,
+    API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
 })

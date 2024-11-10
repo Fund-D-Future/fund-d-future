@@ -1,25 +1,19 @@
 "use client"
 
-import { Heading, Separator, Spinner, Text, TextField } from "@radix-ui/themes"
+import { Box, Heading, Separator, Spinner, Text, TextField } from "@radix-ui/themes"
 import { Google } from "components/icons"
-import { Button } from "components/shared"
-import { RoutesMap } from "lib/constants"
+import { Button, PasswordField } from "components/shared"
+import { RoutesMap } from "types/routes"
 import { ArrowLeft, ChevronRight, MailQuestion } from "lucide-react"
-import { useState, FormEventHandler, useTransition } from "react"
+import { FormEventHandler, useTransition } from "react"
 
 export default function Page() {
   const [isPending, startTransition] = useTransition()
-  const [isReady, setIsReady] = useState(false)
-
-  const handleReady: FormEventHandler<HTMLInputElement> = (e) => {
-    const value = e.currentTarget.checkValidity()
-    if (value !== isReady) setIsReady(value)
-  }
 
   const handleLogin: FormEventHandler<HTMLFormElement> = async (e) => {
     startTransition(() => {
       e.preventDefault()
-      console.log("Logging in...")
+      console.log(Object.fromEntries(new FormData(e.currentTarget)))
     })
   }
 
@@ -58,24 +52,27 @@ export default function Page() {
           <Heading as="h2" size="7" weight="bold" align="center">
             Login with your email
           </Heading>
-          <TextField.Root
-            placeholder="Type here"
-            name="email"
-            type="email"
-            required
-            variant="soft"
-            color="green"
-            onInput={handleReady}
-            radius="none"
-            style={{ fontSize: "2.5rem", fontWeight: 700, minHeight: "5rem", paddingBlock: "1rem" }}
-            className="border-l-6 border-l-[#00CF68] placeholder:text-2xl placeholder:font-bold"
-            size="3"
-          >
-            <TextField.Slot>
-              <MailQuestion size="2.5rem" className="s-6 ml-2 text-[#999999]" />
-            </TextField.Slot>
-          </TextField.Root>
-          <Button type="submit" className="w-full py-5" intent="primary" size="lg" disabled={!isReady || isPending}>
+          <Box as="div" className="space-y-10">
+            <Box className="space-y-3">
+              <Text size="4" weight="medium">
+                Email address
+              </Text>
+              <TextField.Root
+                placeholder="Enter your email address"
+                name="email"
+                type="email"
+                required
+                style={{ backgroundColor: "#FAFAFA" }}
+                size="3"
+              />
+            </Box>
+            <PasswordField label="Password" placeholder="Enter your password" />
+            <a href={RoutesMap.FORGOT_PASSWORD} className="text-md flex items-center gap-1 text-red-700">
+              <MailQuestion size="24" className="mr-2" />
+              <span>Forgot password?</span>
+            </a>
+          </Box>
+          <Button type="submit" className="w-full py-5" intent="primary" size="lg" disabled={isPending}>
             {isPending && <Spinner size="3" />}
             <span>{isPending ? "Logging in..." : "Login"}</span>
           </Button>

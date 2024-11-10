@@ -2,5 +2,6 @@
   "tailwindCSS.experimental.classRegex": [
     ["cva(?:<[^>]*>)?(([^)]*))", "[\"'`]([^\"'`]*).*?[\"'`]", "(?:twMerge|twJoin)\\(([^\\);]*)[\\);]"]
   ],
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "powermode.presets": "exploding-rift"
 }

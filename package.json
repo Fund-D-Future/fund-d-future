@@ -23,6 +23,7 @@
     "coupling-graph": "npx madge --extensions js,jsx,ts,tsx,css,md,mdx ./ --exclude '.next|tailwind.config.js|reset.d.ts|prettier.config.js|postcss.config.js|playwright.config.ts|next.config.js|next-env.d.ts|instrumentation.ts|e2e/|README.md|.storybook/|.eslintrc.js' --image graph.svg"
   },
   "dependencies": {
+    "@dinero.js/currencies": "2.0.0-alpha.1",
     "@next/bundle-analyzer": "^14.2.3",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.0.4",
@@ -50,6 +51,10 @@
     "@vercel/otel": "^1.8.3",
     "class-variance-authority": "^0.7.0",
     "countries-list": "^3.1.1",
+    "currency.js": "^2.0.4",
+    "dinero.js": "^1.9.1",
+    "iron-session": "^8.0.3",
+    "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.454.0",
     "next": "^14.2.3",
@@ -82,6 +87,7 @@
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.1.2",
     "@total-typescript/ts-reset": "^0.5.1",
+    "@types/dinero.js": "^1",
     "@types/jest": "^29.5.10",
     "@types/node": "^20.12.13",
     "@types/react": "^18.3.3",

@@ -1,2 +1,5 @@
 export { Button } from "./Button/Button"
 export { default as Countdown } from "./Countdown/Countdown"
+export { default as PasswordField } from "./PasswordField/PasswordField"
+export { default as LucideIcon, type IconName } from "./LucideIcon/LucideIcon"
+export { default as CurrencySelector } from "./CurrencySelector/CurrencySelector"
