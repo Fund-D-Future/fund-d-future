@@ -3,9 +3,17 @@
 import { Box, Button, Container, Flex, Heading, Text } from "@radix-ui/themes"
 import { CampaignsPreview } from "components/icons"
 import { Button as InternalButton } from "components/shared"
-import { Campaign, CampaignProps, WalletBalance } from "components/ui/dashboard"
+import {
+  Campaign,
+  CampaignProps,
+  ProfileStrength,
+  RecentDonations,
+  RewardsList,
+  WalletBalance,
+} from "components/ui/dashboard"
 import { Eye, EyeOff, Handshake } from "lucide-react"
 import { useState } from "react"
+import { RoutesMap } from "types/routes"
 import { User } from "types/user"
 
 const dummyUser = {
@@ -24,7 +32,6 @@ const dummyCampaigns: (CampaignProps & { id: string; description: string })[] = 
     thumbnail: "https://via.placeholder.com/150",
     goal: 100,
     amountRaised: 50,
-    href: "/campaign/1",
     remainingDays: 15,
   },
   {
@@ -34,7 +41,6 @@ const dummyCampaigns: (CampaignProps & { id: string; description: string })[] = 
     thumbnail: "https://via.placeholder.com/150",
     goal: 200,
     amountRaised: 100,
-    href: "/campaign/2",
     remainingDays: 1,
   },
   {
@@ -44,7 +50,6 @@ const dummyCampaigns: (CampaignProps & { id: string; description: string })[] = 
     thumbnail: "https://via.placeholder.com/150",
     goal: 3200,
     amountRaised: 100,
-    href: "/campaign/3",
     remainingDays: 20,
   },
   {
@@ -54,7 +59,6 @@ const dummyCampaigns: (CampaignProps & { id: string; description: string })[] = 
     thumbnail: "https://via.placeholder.com/150",
     goal: 400,
     amountRaised: 200,
-    href: "/campaign/4",
     remainingDays: 10,
   },
   {
@@ -64,7 +68,6 @@ const dummyCampaigns: (CampaignProps & { id: string; description: string })[] = 
     thumbnail: "https://via.placeholder.com/150",
     goal: 500,
     amountRaised: 300,
-    href: "/campaign/5",
     remainingDays: 5,
   },
   {
@@ -74,12 +77,11 @@ const dummyCampaigns: (CampaignProps & { id: string; description: string })[] = 
     thumbnail: "https://via.placeholder.com/150",
     goal: 600,
     amountRaised: 400,
-    href: "/campaign/6",
     remainingDays: 2,
   },
 ]
 
-export default function StudentDashboardHome({
+export default function Page({
   user = dummyUser,
   campaigns = dummyCampaigns,
 }: {
@@ -90,7 +92,7 @@ export default function StudentDashboardHome({
 
   return (
     <>
-      <Box className="min-h-80 space-y-10 rounded-b-xl bg-[#056434] p-10 md:rounded-xl">
+      <Box className=" min-h-80 space-y-10 rounded-b-xl bg-[#056434] p-10 md:rounded-xl">
         <header className="space-y-3 text-white">
           <Heading size="4" className="flex items-center gap-2 font-extrabold">
             Hello {user.firstName} <Handshake color="yellow" />
@@ -118,7 +120,7 @@ export default function StudentDashboardHome({
             Active Campaigns
           </Text>
           {campaigns.length > 0 && (
-            <InternalButton intent="primary" size="sm">
+            <InternalButton intent="primary" size="sm" href={RoutesMap.CROWDFUNDING}>
               Create New
             </InternalButton>
           )}
@@ -135,12 +137,45 @@ export default function StudentDashboardHome({
             <Text size="3" weight="regular" className="text-[#777777]">
               No active campaigns yet
             </Text>
-            <InternalButton intent="primary" size="sm">
+            <InternalButton intent="primary" size="sm" href={RoutesMap.CROWDFUNDING}>
               Create New
             </InternalButton>
           </Flex>
         )}
       </Container>
+      <Flex direction="row" justify="between" gap="4" className="my-10 mr-5 min-h-72 bg-transparent" wrap="wrap">
+        <ProfileStrength value={26} />
+        <RewardsList
+          rewards={[
+            { id: "1", title: "Performance Bonus", amount: 50, currency: "USD", claimed: false, claimLink: "/claim/1" },
+          ]}
+        />
+        <RecentDonations
+          donations={[
+            {
+              id: "1",
+              donatedBy: "John Doe",
+              amount: 50,
+              currency: "USD",
+              donatedAt: "2 days ago",
+            },
+            {
+              id: "2",
+              donatedBy: "Jane Doe",
+              amount: 100,
+              currency: "USD",
+              donatedAt: "3 days ago",
+            },
+            {
+              id: "3",
+              donatedBy: "Anonymous",
+              amount: 50,
+              currency: "USD",
+              donatedAt: "2 days ago",
+            },
+          ]}
+        />
+      </Flex>
     </>
   )
 }

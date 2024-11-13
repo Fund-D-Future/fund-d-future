@@ -36,7 +36,7 @@ function RoleCard({ title, description, children, href }: RoleCardProps) {
   )
 }
 
-export default async function Page() {
+export default function Page() {
   return (
     <>
       <header>

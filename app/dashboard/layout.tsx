@@ -6,10 +6,11 @@ import { RoutesMap } from "types/routes"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
 import { User } from "types/user"
+import { createPortal } from "react-dom"
 
 const menuItems: Record<User["role"], SidebarItem[]> = {
   student: [
-    { label: "Dashboard", icon: "house", href: "/dashboard", category: "Main Menu" },
+    { label: "Home", icon: "house", href: "/dashboard", category: "Main Menu" },
     { label: "Crowdfunding", icon: "hand-helping", href: "/dashboard/crowdfunding", category: "Main Menu" },
     { label: "Profile", icon: "user", href: "/dashboard/profile", category: "Main Menu" },
     { label: "Notifications", icon: "bell", href: "/notifications", category: "Others" },
@@ -20,25 +21,31 @@ const menuItems: Record<User["role"], SidebarItem[]> = {
   admin: [],
 }
 
-async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  //   let userData
+type DashboardLayoutProps = {
+  student: React.ReactNode
+  funder: React.ReactNode
+}
 
-  //   try {
-  //     userData = await getUserData()
-  //   } catch (error) {
-  //     redirect(RoutesMap.LOGIN)
-  //   }
+async function DashboardLayout({ student, funder }: DashboardLayoutProps) {
+  // let userData
 
+  // try {
+  //   userData = await getUserData()
+  // } catch (error) {
+  //   redirect(RoutesMap.LOGIN)
+  // }
   return (
     <div className="flex h-screen bg-[#FAFAFA]">
       <Sidebar items={menuItems.student} mmi={4} />
-      <main className="flex-1 overflow-y-auto">{children}</main>
+      <main className="md:pb-auto flex-1 overflow-y-auto pb-40">{student}</main>
     </div>
     // <Suspense fallback={<Spinner size="3" />}>
     //   <UserProvider initialUser={userData}>
     //     <div className="flex h-screen bg-[#FAFAFA]">
     //       <Sidebar items={menuItems[userData.role]} mmi={4} />
-    //       <main className="flex-1 overflow-y-auto">{children}</main>
+    //       <main className="md:pb-auto flex-1 overflow-y-auto pb-40">
+    //         {userData.role === "student" ? student : funder}
+    //       </main>
     //     </div>
     //   </UserProvider>
     // </Suspense>

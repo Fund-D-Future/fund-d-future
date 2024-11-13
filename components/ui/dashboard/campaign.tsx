@@ -1,30 +1,31 @@
 import { Badge, Card, Flex, Heading, Inset, Link, Slider, Text } from "@radix-ui/themes"
 import { formatCurrency } from "lib/currency"
+import { RoutesMap } from "types/routes"
 
 export type CampaignProps = {
+  id: string
   title: string
   remainingDays: number
   amountRaised: number
   goal: number
   thumbnail: string
-  href: string
   currency?: string
 }
 
 export default function Campaign({
+  id,
   title,
   remainingDays,
   amountRaised,
   goal,
   thumbnail,
-  href,
   currency = "USD",
 }: CampaignProps) {
   return (
-    <Link href={href} asChild style={{ color: "#333333" }}>
+    <Link href={RoutesMap.CAMPAIGNS + `/${id}`} style={{ color: "#333333" }} className="flex-1">
       <Card
         size="2"
-        className="relative min-w-72 flex-1 rounded-full border border-[#0000000D] bg-white"
+        className="relative h-full min-w-72 rounded-full border border-[#0000000D] bg-white"
         style={{
           display: "flex",
           flexDirection: "column",

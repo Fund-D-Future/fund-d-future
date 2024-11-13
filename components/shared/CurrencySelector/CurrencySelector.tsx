@@ -5,13 +5,22 @@ import { useCurrency } from "hooks/use-currency"
 import { Select } from "@radix-ui/themes"
 
 type CurrencySelectorProps = {
-  value: string
+  name?: string
+  defaultValue?: string
+  value?: string
   verbose?: boolean // Show currency name
-  onChange: (currency: string) => void
+  onChange?: (currency: string) => void
   style?: CSSProperties
 }
 
-export default function CurrencySelector({ value, verbose = false, onChange, style }: CurrencySelectorProps) {
+export default function CurrencySelector({
+  name = "currency",
+  defaultValue,
+  value,
+  verbose = false,
+  onChange,
+  style,
+}: CurrencySelectorProps) {
   const { getSupportedCurrencies, getCurrencyMeta } = useCurrency()
   const [currencies, setCurrencies] = useState<string[]>([])
 
@@ -20,7 +29,7 @@ export default function CurrencySelector({ value, verbose = false, onChange, sty
   }, [])
 
   return (
-    <Select.Root value={value} onValueChange={onChange} size="2">
+    <Select.Root defaultValue={defaultValue} name={name} value={value} onValueChange={onChange} size="2">
       <Select.Trigger placeholder="Currency" variant="ghost" style={{ color: "white", ...style, outline: 0 }} />
       <Select.Content variant="soft" position="popper" color="green" style={{ maxHeight: "20rem" }}>
         <Select.Group>

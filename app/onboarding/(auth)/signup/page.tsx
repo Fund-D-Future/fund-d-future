@@ -6,9 +6,8 @@ import { Google } from "components/icons"
 import { Button, PasswordField } from "components/shared"
 import { RoutesMap } from "types/routes"
 import { UserRole } from "lib/definitions"
-import { ArrowLeft, ChevronRight, Eye, EyeOff } from "lucide-react"
+import { ArrowLeft, ChevronRight } from "lucide-react"
 import { useSearchParams } from "next/navigation"
-import { useState } from "react"
 import { useFormState, useFormStatus } from "react-dom"
 
 export default function Page() {
@@ -17,7 +16,6 @@ export default function Page() {
 
   const [state, action] = useFormState(signup, undefined)
   const { pending } = useFormStatus()
-  const [showPassword, setShowPassword] = useState(false)
 
   return (
     <>
