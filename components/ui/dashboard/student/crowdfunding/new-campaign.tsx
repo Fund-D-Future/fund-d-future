@@ -17,6 +17,7 @@ import { createNewCampaign } from "app/actions/campaigns"
 import { Button, CurrencySelector } from "components/shared"
 import { CheckCircle2, Info } from "lucide-react"
 import { useState } from "react"
+import { FormState, NewCampaignForm } from "lib/definitions"
 
 const supportedCampaignDuration = [
   { value: "30d", label: "30 days" },
@@ -37,7 +38,7 @@ const supportedCampaignPurpose = [
 
 export default function CreateCampaignForm() {
   const [selectable, setSelectable] = useState({
-    duration: supportedCampaignDuration[0]?.value,
+    duration: supportedCampaignDuration[0]!.value,
     purpose: [] as string[],
   })
   const isDurationChecked = (value: string) => selectable.duration === value
@@ -46,7 +47,16 @@ export default function CreateCampaignForm() {
     setSelectable((prev) => ({ ...prev, [key]: value }))
   }
 
-  const [state, action] = useFormState(createNewCampaign, undefined)
+  const handleCampaignCreation = async (state: FormState<NewCampaignForm>, formData: FormData) => {
+    // add the selected duration and purpose to the form data
+    formData.append("duration", selectable.duration)
+    formData.append("purpose", selectable.purpose.join(","))
+
+    // create the campaign
+    return createNewCampaign(state, formData)
+  }
+
+  const [state, action] = useFormState(handleCampaignCreation, undefined)
   const { pending } = useFormStatus()
 
   return (

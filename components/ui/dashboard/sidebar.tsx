@@ -41,9 +41,21 @@ const categorize = (items: SidebarItem[]) => {
 export default function Sidebar({ items, mmi = 5 }: DynamicSidebarProps) {
   const pathname = usePathname()
 
-  // Check if the current path matches the item's href
   const isActive = (href: string) => {
-    return pathname === href
+    // If we're on /dashboard/profile, we don't want /dashboard to be active
+    const moreSpecificRouteExists = items.some(
+      (item) =>
+        item.href !== href && // not the current item
+        item.href.startsWith(href) && // is a child route of current item
+        pathname.startsWith(item.href) // and matches current pathname
+    )
+
+    // If a more specific route exists and matches current path,
+    // this less specific route should not be active
+    if (moreSpecificRouteExists) return false
+
+    // Otherwise, check if this route matches the current path
+    return pathname === href || pathname.startsWith(href + "/")
   }
 
   // Split items into revealed and hidden items (for mobile)
