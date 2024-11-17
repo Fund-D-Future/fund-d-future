@@ -39,7 +39,6 @@ async function refreshTokens(refreshToken: string): Promise<{ accessToken: strin
 
     return response.json() as Promise<{ accessToken: string; refreshToken: string }>
   } catch (error) {
-    console.error("Token refresh failed:", error)
     return null
   }
 }
@@ -63,17 +62,22 @@ export async function getSession() {
         return null
       }
 
-      // Update the session with the new tokens
-      session.accessToken = newTokens.accessToken
-      session.refreshToken = newTokens.refreshToken
-
-      // Save the session
-      await session.save()
+      await saveSession(newTokens)
     }
 
     return session
   } catch (error) {
-    console.error("Token validation failed:", error)
     return null
   }
+}
+
+export async function saveSession(session: Omit<SessionData, "lastActivity">) {
+  const ironSession = await getIronSession<SessionData>(cookies(), sessionOptions)
+
+  // Update the session with the new tokens
+  ironSession.accessToken = session.accessToken
+  ironSession.refreshToken = session.refreshToken
+  ironSession.lastActivity = Date.now()
+
+  await ironSession.save()
 }

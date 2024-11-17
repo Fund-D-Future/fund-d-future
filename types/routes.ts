@@ -1,5 +1,7 @@
 export enum RoutesMap {
   HOME = "/",
+  ABOUT = "/about",
+  HOW_IT_WORKS = "/how-it-works",
   ONBOARDING = "/onboarding",
   SIGNUP = "/onboarding/signup",
   LOGIN = "/onboarding/login",

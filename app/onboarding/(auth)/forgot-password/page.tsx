@@ -6,16 +6,22 @@ import { useState, useTransition } from "react"
 import { sendResetPasswordLink } from "app/actions/auth"
 import { Button } from "components/shared"
 import { useRouter } from "next/navigation"
+import { useNotificationStore } from "lib/stores/notification-store"
 
 export default function Page() {
   const [hasSentResetLink, setHasSentResetLink] = useState(false)
   const [isPending, startTransition] = useTransition()
+  const { addNotification } = useNotificationStore()
   const router = useRouter()
 
   const handleSendResetLink = async (formData: FormData) => {
-    startTransition(() => {
-      sendResetPasswordLink(formData)
-      setHasSentResetLink(true)
+    startTransition(async () => {
+      const result = await sendResetPasswordLink(formData)
+      if (result) {
+        addNotification("error", result.message)
+      } else {
+        setHasSentResetLink(true)
+      }
     })
   }
 

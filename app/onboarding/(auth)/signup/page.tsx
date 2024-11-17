@@ -9,13 +9,22 @@ import { UserRole } from "lib/definitions"
 import { ArrowLeft, ChevronRight } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import { useFormState, useFormStatus } from "react-dom"
+import { useNotificationStore } from "lib/stores/notification-store"
+import { useEffect } from "react"
 
 export default function Page() {
   const searchParams = useSearchParams()
   const role = searchParams.get("role") as UserRole | null
 
+  const { addNotification } = useNotificationStore()
   const [state, action] = useFormState(signup, undefined)
   const { pending } = useFormStatus()
+
+  useEffect(() => {
+    if (state?.message) {
+      addNotification("error", state.message)
+    }
+  }, [state?.message])
 
   return (
     <>
@@ -149,7 +158,7 @@ export default function Page() {
           </Box>
           <div className="space-y-8 py-6">
             <Button type="submit" className="w-full py-5" intent="primary" size="lg" disabled={pending}>
-              {pending && <Spinner />}
+              {pending && <Spinner size="3" />}
               <span>{pending ? "Signing up..." : "Sign up"}</span>
             </Button>
             <Text size="6" weight="regular" align="center" as="p" className="text-[#888888]">

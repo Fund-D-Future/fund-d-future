@@ -6,14 +6,25 @@ import { Button, PasswordField } from "components/shared"
 import { RoutesMap } from "types/routes"
 import { ArrowLeft, ChevronRight, MailQuestion } from "lucide-react"
 import { FormEventHandler, useTransition } from "react"
+import { loginUser } from "app/actions/auth"
+import { useNotificationStore } from "lib/stores/notification-store"
 
 export default function Page() {
   const [isPending, startTransition] = useTransition()
+  const { addNotification } = useNotificationStore()
 
   const handleLogin: FormEventHandler<HTMLFormElement> = async (e) => {
-    startTransition(() => {
+    startTransition(async () => {
       e.preventDefault()
-      console.log(Object.fromEntries(new FormData(e.currentTarget)))
+
+      const formData = new FormData(e.currentTarget)
+      const data = Object.fromEntries(formData.entries()) as { email: string; password: string }
+
+      // Send login request to the server
+      const result = await loginUser(data.email, data.password)
+      if (result.code === "LOGIN_FAILED") {
+        addNotification("error", result.message)
+      }
     })
   }
 
@@ -73,7 +84,7 @@ export default function Page() {
             </a>
           </Box>
           <Button type="submit" className="w-full py-5" intent="primary" size="lg" disabled={isPending}>
-            {isPending && <Spinner size="3" />}
+            {isPending && <Spinner size="3" mr="3" />}
             <span>{isPending ? "Logging in..." : "Login"}</span>
           </Button>
         </form>
