@@ -1,3 +1,5 @@
+import { Campaign } from "./campaign"
+
 export enum UserRole {
   STUDENT = "USER",
   FUNDER = "FUNDER",
@@ -6,8 +8,8 @@ export enum UserRole {
 
 export interface User {
   id: string
-  firstName: string
-  lastName: string
+  firstname: string
+  lastname: string
   email: string
   role: UserRole
   avatar?: string
@@ -31,6 +33,7 @@ export interface User {
   accountNonExpired?: boolean
   accountNonLocked?: boolean
   credentialsNonExpired?: boolean
+  campaigns: Campaign[]
 }
 
 export interface AuthError {

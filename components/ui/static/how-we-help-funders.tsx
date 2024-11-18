@@ -35,7 +35,7 @@ export default function HowWeHelpFunders() {
           d="M93.4407 12.8183C93.4407 5.89985 99.0493 0.291325 105.968 0.291325H762.032C768.95 0.291325 774.559 5.89985 774.559 12.8183V460.585H93.4407V12.8183Z"
           fill="#D6D6D6"
           stroke="#CCCCCC"
-          stroke-width="0.58265"
+          strokeWidth="0.58265"
         />
         <g filter="url(#filter3_di_307_1023)">
           <path
@@ -43,7 +43,7 @@ export default function HowWeHelpFunders() {
             fill="#050505"
           />
         </g>
-        <g clip-path="url(#clip0_307_1023)">
+        <g clipPath="url(#clip0_307_1023)">
           <rect x="105.385" y="12.2357" width="657.23" height="439.318" fill="url(#pattern0_307_1023)" />
         </g>
         <g filter="url(#filter4_i_307_1023)">
@@ -65,9 +65,9 @@ export default function HowWeHelpFunders() {
             width="866.984"
             height="15.1489"
             filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
           >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
             <feGaussianBlur stdDeviation="3.4959" result="effect1_foregroundBlur_307_1023" />
           </filter>
@@ -78,9 +78,9 @@ export default function HowWeHelpFunders() {
             width="855.331"
             height="4.07854"
             filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
           >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
             <feGaussianBlur stdDeviation="0.873975" result="effect1_foregroundBlur_307_1023" />
           </filter>
@@ -91,9 +91,9 @@ export default function HowWeHelpFunders() {
             width="853"
             height="15.7315"
             filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
           >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
             <feColorMatrix
               in="SourceAlpha"
@@ -125,9 +125,9 @@ export default function HowWeHelpFunders() {
             width="679.37"
             height="460.294"
             filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
           >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feColorMatrix
               in="SourceAlpha"
               type="matrix"
@@ -164,9 +164,9 @@ export default function HowWeHelpFunders() {
             width="657.229"
             height="439.318"
             filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
           >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
             <feColorMatrix
               in="SourceAlpha"
@@ -187,9 +187,9 @@ export default function HowWeHelpFunders() {
             width="678.205"
             height="459.128"
             filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
           >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
             <feColorMatrix
               in="SourceAlpha"
@@ -218,12 +218,12 @@ export default function HowWeHelpFunders() {
             y2="468.451"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#C6C5C5" />
-            <stop offset="0.00868664" stop-color="#FEFEFE" />
-            <stop offset="0.0311419" stop-color="#E3E3E3" />
-            <stop offset="0.962505" stop-color="#E7E6E6" />
-            <stop offset="0.992057" stop-color="white" />
-            <stop offset="1" stop-color="#C6C5C5" />
+            <stop stopColor="#C6C5C5" />
+            <stop offset="0.00868664" stopColor="#FEFEFE" />
+            <stop offset="0.0311419" stopColor="#E3E3E3" />
+            <stop offset="0.962505" stopColor="#E7E6E6" />
+            <stop offset="0.992057" stopColor="white" />
+            <stop offset="1" stopColor="#C6C5C5" />
           </linearGradient>
           <linearGradient
             id="paint1_linear_307_1023"
@@ -233,8 +233,8 @@ export default function HowWeHelpFunders() {
             y2="476.025"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#EFEFEF" />
-            <stop offset="1" stop-color="#DBDBDB" />
+            <stop stopColor="#EFEFEF" />
+            <stop offset="1" stopColor="#DBDBDB" />
           </linearGradient>
           <radialGradient
             id="paint2_radial_307_1023"
@@ -244,8 +244,8 @@ export default function HowWeHelpFunders() {
             gradientUnits="userSpaceOnUse"
             gradientTransform="translate(145.005 48.6513) rotate(33.6577) scale(856.793 1265.62)"
           >
-            <stop offset="0.155831" stop-color="white" stop-opacity="0.24" />
-            <stop offset="1" stop-color="white" stop-opacity="0" />
+            <stop offset="0.155831" stopColor="white" stopOpacity="0.24" />
+            <stop offset="1" stopColor="white" stopOpacity="0" />
           </radialGradient>
           <clipPath id="clip0_307_1023">
             <rect x="105.385" y="12.2357" width="657.23" height="439.318" rx="2.3306" fill="white" />

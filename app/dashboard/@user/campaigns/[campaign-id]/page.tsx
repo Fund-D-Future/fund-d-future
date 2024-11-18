@@ -1,54 +1,46 @@
 import { AspectRatio, Badge, Box, Container, Flex, Text, Heading, Slider, AlertDialog } from "@radix-ui/themes"
 import { Button } from "components/shared"
 import { RecentDonations } from "components/ui/dashboard"
+import { env } from "env.mjs"
 import { formatCurrency } from "lib/currency"
 import { ArrowLeft, Calendar } from "lucide-react"
+import { notFound } from "next/navigation"
+import { Campaign } from "types/campaign"
 import { RoutesMap } from "types/routes"
+import { dateHandler, mediaMetadataManager } from "utils"
+import { createApiClient } from "utils/api"
 
-async function getCampaignDetails(slug: string) {
-  return {
-    image: "https://via.placeholder.com/240",
-    title: "Funds for my Ongoing Bootcamp",
-    timeline: {
-      current: 21,
-      total: 30,
-    },
-    donations: [
-      {
-        id: "1",
-        amount: 50,
-        currency: "USD",
-        donatedBy: "John Doe",
-        donatedAt: "2 days ago",
-      },
-      {
-        id: "2",
-        amount: 100,
-        currency: "USD",
-        donatedBy: "Jane Doe",
-        donatedAt: "3 days ago",
-      },
-      {
-        id: "3",
-        amount: 200,
-        currency: "USD",
-        donatedBy: "John Doe",
-        donatedAt: "4 days ago",
-      },
-    ],
-    stats: {
-      raised: 1050.99,
-      goal: 50000.0,
-      currency: "USD",
-    },
-  } as any
+async function getCampaignDetails(slug: string): Promise<Campaign | null> {
+  try {
+    const api = await createApiClient()
+    const response = await api.fetch(`${env.API_URL}/campaigns/${slug}`)
+    if (!response.ok) {
+      throw new Error("Failed to fetch campaign details")
+    }
+
+    const { body: campaign } = (await response.json()) as { body: Campaign }
+    return campaign
+  } catch (error) {
+    return null
+  }
 }
 
-async function getCampaignAnalysis(name: string) {
-  return {
-    score: 0.8,
-    sentiment: "positive",
-  } as any
+async function getCampaignAnalysis(slug: string, text?: string): Promise<any | null> {
+  try {
+    const response = await fetch(`${env.API_URL}/ai/campaigns/analyse`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ campaignId: slug, text }),
+    })
+    if (!response.ok) {
+      throw new Error("Failed to fetch campaign analysis")
+    }
+
+    const { body: analysis } = (await response.json()) as { body: any }
+    return analysis
+  } catch (error) {
+    return null
+  }
 }
 
 export default async function Page({
@@ -59,7 +51,20 @@ export default async function Page({
   }
 }) {
   const details = await getCampaignDetails(params.campaignId)
-  const analysis = await getCampaignAnalysis(details.title)
+  if (!details) {
+    return notFound()
+  }
+
+  const analysis = await getCampaignAnalysis(params.campaignId, details?.description)
+  let coverMedia: React.ReactNode = null
+  if (details?.files && details.files.length > 0) {
+    coverMedia = await mediaMetadataManager.createMediaElement(details.files[0]!.url)
+  }
+
+  const duration = {
+    days: dateHandler.getDaysBetween(details.startDate, details.endDate),
+    current: dateHandler.getDaysBetween(details.startDate, new Date().toISOString()),
+  }
 
   return (
     <Container py="4">
@@ -74,28 +79,28 @@ export default async function Page({
           {/* Campaign Details */}
           <header>
             <AspectRatio ratio={16 / 9} className="w-full bg-slate-100">
-              <img src={details.image} alt={details.title} className="h-full w-full object-cover" />
+              {coverMedia}
             </AspectRatio>
             <Flex align="center" gap="3" my="2">
               <Badge size="3" color="green" variant="soft" radius="full">
                 <Calendar size={12} />
                 <Text size="1" weight="bold">
-                  Day {details.timeline.current} of {details.timeline.total}
+                  Day {duration.current} of {duration.days}
                 </Text>
               </Badge>
               <Text size="1" weight="medium" color="gray">
-                {details.timeline.total - details.timeline.current} days left
+                {duration.days - duration.current} days left
               </Text>
             </Flex>
           </header>
           <Flex direction="column" gap="4" my="5">
             <Box className="space-y-3 py-3">
               <Heading size="8" weight="medium" className="text-[#333333]">
-                {details.title}
+                {details.name}
               </Heading>
               <Slider
-                value={[details.stats.raised]}
-                max={details.stats.goal}
+                value={[details.raisedFunding]}
+                max={details.fundingGoal}
                 color="green"
                 size="2"
                 radius="full"
@@ -108,7 +113,7 @@ export default async function Page({
                   Raised
                 </Text>
                 <Text size="6" weight="bold">
-                  {formatCurrency(details.stats.raised, details.stats.currency)}
+                  {formatCurrency(details.raisedFunding, details.currency)}
                 </Text>
               </Flex>
               <Flex direction="column" gap="1" className="flex-1 text-center">
@@ -116,7 +121,7 @@ export default async function Page({
                   Goal
                 </Text>
                 <Text size="6" weight="bold">
-                  {formatCurrency(details.stats.goal, details.stats.currency)}
+                  {formatCurrency(details.fundingGoal, details.currency)}
                 </Text>
               </Flex>
               <Flex direction="column" gap="1" className="flex-1 text-center">
@@ -124,7 +129,7 @@ export default async function Page({
                   Left
                 </Text>
                 <Text size="6" weight="bold">
-                  {formatCurrency(details.stats.goal - details.stats.raised, details.stats.currency)}
+                  {formatCurrency(details.fundingGoal - details.raisedFunding, details.currency)}
                 </Text>
               </Flex>
             </Flex>
@@ -183,7 +188,7 @@ export default async function Page({
           </Flex>
         </Box>
         <aside className="max-w-[400px] flex-1">
-          <RecentDonations donations={details.donations || []} />
+          <RecentDonations />
           {/* Interactions Chart */}
         </aside>
       </Flex>

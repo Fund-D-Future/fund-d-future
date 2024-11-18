@@ -5,99 +5,28 @@ import { CampaignsPreview } from "components/icons"
 import { Button as InternalButton } from "components/shared"
 import {
   Campaign,
-  CampaignProps,
   ProfileStrength,
   RecentDonations,
   RewardsList,
+  UserContext,
   WalletBalance,
 } from "components/ui/dashboard"
 import { Eye, EyeOff, Handshake } from "lucide-react"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { RoutesMap } from "types/routes"
-import { User } from "types/user"
 
-const dummyUser = {
-  id: "a3e4f5",
-  firstName: "John",
-  lastName: "Doe",
-  email: "john.doe@gmail.com",
-  role: "USER",
-} as User
-
-const dummyCampaigns: (CampaignProps & { id: string; description: string })[] = [
-  {
-    id: "1",
-    title: "Funds for my Ongoing Bootcamp",
-    description: "This is a campaign description",
-    thumbnail: "https://via.placeholder.com/150",
-    goal: 100,
-    amountRaised: 50,
-    remainingDays: 15,
-  },
-  {
-    id: "2",
-    title: "Tution fee for my Post Graduate Diploma",
-    description: "This is a campaign description",
-    thumbnail: "https://via.placeholder.com/150",
-    goal: 200,
-    amountRaised: 100,
-    remainingDays: 1,
-  },
-  {
-    id: "3",
-    title: "Tution fee for my Post Graduate Diploma",
-    description: "This is a campaign description",
-    thumbnail: "https://via.placeholder.com/150",
-    goal: 3200,
-    amountRaised: 100,
-    remainingDays: 20,
-  },
-  {
-    id: "4",
-    title: "Campaign 4",
-    description: "This is a campaign description",
-    thumbnail: "https://via.placeholder.com/150",
-    goal: 400,
-    amountRaised: 200,
-    remainingDays: 10,
-  },
-  {
-    id: "5",
-    title: "Medical Bills",
-    description: "This is a campaign description",
-    thumbnail: "https://via.placeholder.com/150",
-    goal: 500,
-    amountRaised: 300,
-    remainingDays: 5,
-  },
-  {
-    id: "6",
-    title: "Campaign 6",
-    description: "This is a campaign description",
-    thumbnail: "https://via.placeholder.com/150",
-    goal: 600,
-    amountRaised: 400,
-    remainingDays: 2,
-  },
-]
-
-export default function Page({
-  user = dummyUser,
-  campaigns = dummyCampaigns,
-}: {
-  user?: User
-  campaigns?: CampaignProps[]
-}) {
+export default function Page() {
   const [hideBalance, setHideBalance] = useState(false)
+  const { user, refreshUserData } = useContext(UserContext)
 
   return (
     <>
       <Box className=" min-h-80 space-y-10 rounded-b-xl bg-[#056434] p-10 md:rounded-xl">
-        <header className="space-y-3 text-white">
-          <Heading size="4" className="flex items-center gap-2 font-extrabold">
-            Hello {user.firstName} <Handshake color="yellow" />
+        <header className="space-y-2 text-white">
+          <Heading size="6" className="flex items-center gap-2 font-extrabold">
+            Hello {user?.firstname} <Handshake color="yellow" />
           </Heading>
-          <Text as="p" size="2" weight="medium">
+          <Text as="p" size="4" weight="medium">
             Let's check in on your campaigns and continue reaching your goals!
           </Text>
         </header>
@@ -119,15 +48,15 @@ export default function Page({
           <Text size="3" weight="medium" className="text-[#777777]">
             Active Campaigns
           </Text>
-          {campaigns.length > 0 && (
+          {(user?.campaigns?.length ?? 0) > 0 && (
             <InternalButton intent="primary" size="sm" href={RoutesMap.CROWDFUNDING}>
               Create New
             </InternalButton>
           )}
         </header>
-        {campaigns.length > 0 ? (
+        {(user?.campaigns?.length ?? 0) > 0 ? (
           <Flex gap="5" py="5" overflowX="auto">
-            {dummyCampaigns.map((campaign) => (
+            {user!.campaigns.map((campaign) => (
               <Campaign {...campaign} key={campaign.id} />
             ))}
           </Flex>
@@ -150,31 +79,7 @@ export default function Page({
             { id: "1", title: "Performance Bonus", amount: 50, currency: "USD", claimed: false, claimLink: "/claim/1" },
           ]}
         />
-        <RecentDonations
-          donations={[
-            {
-              id: "1",
-              donatedBy: "John Doe",
-              amount: 50,
-              currency: "USD",
-              donatedAt: "2 days ago",
-            },
-            {
-              id: "2",
-              donatedBy: "Jane Doe",
-              amount: 100,
-              currency: "USD",
-              donatedAt: "3 days ago",
-            },
-            {
-              id: "3",
-              donatedBy: "Anonymous",
-              amount: 50,
-              currency: "USD",
-              donatedAt: "2 days ago",
-            },
-          ]}
-        />
+        <RecentDonations />
       </Flex>
     </>
   )

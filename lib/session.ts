@@ -1,15 +1,17 @@
+"use server"
+
 import { getIronSession } from "iron-session"
 import { cookies } from "next/headers"
 import { jwtDecode } from "jwt-decode"
 import { env } from "env.mjs"
 
-export interface SessionData {
+interface SessionData {
   accessToken: string
   refreshToken: string
   lastActivity: number
 }
 
-export const sessionOptions = {
+const sessionOptions = {
   password: env.IRON_SESSION_PASSWORD,
   cookieName: "fdf-session",
   cookieOptions: {

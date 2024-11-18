@@ -1,4 +1,4 @@
-import { getUserData, loginUser, logoutUser } from "app/actions/auth"
+import { getUserData } from "app/actions/auth"
 import { StoreState } from "types/store"
 import { create } from "zustand"
 import { createJSONStorage, persist, StateStorage } from "zustand/middleware"
@@ -39,7 +39,7 @@ const useStore = create<StoreState>()(
       createCampaign: async (campaignData) => {
         try {
           const user = get().user
-          if (!user || user.role !== "student") {
+          if (!user || user.role !== "USER") {
             throw new Error("Only students can create campaigns")
           }
 
@@ -73,7 +73,7 @@ const useStore = create<StoreState>()(
       donateToCampaign: async (campaignId, amount) => {
         try {
           const user = get().user
-          if (!user || user.role !== "funder") {
+          if (!user || user.role !== "FUNDER") {
             throw new Error("Only funders can donate")
           }
 
@@ -108,7 +108,7 @@ const useStore = create<StoreState>()(
       updateCampaignStatus: async (campaignId, status) => {
         try {
           const user = get().user
-          if (!user || user.role !== "admin") {
+          if (!user || user.role !== "ADMIN") {
             throw new Error("Only admins can update campaign status")
           }
 

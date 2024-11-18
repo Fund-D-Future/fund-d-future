@@ -14,8 +14,8 @@ export type FormState<T> =
 export const signupFormSchema = z
   .object({
     role: z.enum(["student", "funder"], { message: "Role must be either 'student' or 'funder'" }),
-    firstName: z.string().min(2, "First name must be at least 2 characters long").trim(),
-    lastName: z.string().min(2, "Last name must be at least 2 characters long").trim(),
+    firstname: z.string().min(2, "First name must be at least 2 characters long").trim(),
+    lastname: z.string().min(2, "Last name must be at least 2 characters long").trim(),
     email: z.string().email("Please enter a valid email address").trim().toLowerCase(),
     password: z
       .string()

@@ -7,6 +7,15 @@ export enum CampaignStatus {
   CANCELLED = "cancelled",
 }
 
+export enum CampaignFeature {
+  TUITION_FEES = "TUITION_FEES",
+  ACCOMMODATION_AND_LIVING_EXPENSES = "ACCOMMODATION_AND_LIVING_EXPENSES",
+  TEXTBOOKS_AND_STUDY_MATERIALS = "TEXTBOOKS_AND_STUDY_MATERIALS",
+  TECH_EQUIPMENT = "TECH_EQUIPMENT",
+  BOOTCAMPS_AND_CERTIFICATIONS = "BOOTCAMPS_AND_CERTIFICATIONS",
+  STUDY_ABROAD_OR_EXCHANGE_PROGRAMMES = "STUDY_ABROAD_OR_EXCHANGE_PROGRAMMES",
+}
+
 export interface CampaignDonor {
   id: string
   amount: number
@@ -36,12 +45,22 @@ export interface Campaign {
   fundingGoal: number
   raisedFunding: number
   currency: CurrencyCode
-  feature: string
+  feature: CampaignFeature
   startDate: string
   endDate: string
   owner: User
   files: CampaignFile[]
   wallet: CampaignWallet
+  createdAt: string
+  updatedAt?: string
+}
+
+export interface Donation {
+  id: string
+  amount: number
+  currency: CurrencyCode
+  campaign: Campaign
+  donor: User
   createdAt: string
   updatedAt?: string
 }

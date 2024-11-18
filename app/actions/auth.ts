@@ -87,7 +87,7 @@ export async function resetPassword(token: string, password: string) {
 
 export async function getUserData() {
   const api = await createApiClient()
-  const response = await api.fetch(`${env.API_URL}/users/user-details`, { method: "GET" })
+  const response = await api.fetch(`${env.API_URL}/users/user-details`)
 
   if (!response.ok) {
     throw new Error("Failed to fetch user data")
@@ -109,7 +109,10 @@ export async function loginUser(email: string, password: string) {
       throw new Error("Login failed")
     }
 
-    const { accessToken, refreshToken } = (await response.json()) as { accessToken: string; refreshToken: string }
+    const { access_token: accessToken, refresh_token: refreshToken } = (await response.json()) as {
+      access_token: string
+      refresh_token: string
+    }
     // store tokens in cookies
     await saveSession({ accessToken, refreshToken })
 

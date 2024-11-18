@@ -6,3 +6,4 @@ export { default as CurrencySelector } from "./CurrencySelector/CurrencySelector
 export { default as FileInput } from "./FileInput/FileInput"
 export { default as Notifications } from "./Notifications/Notifications"
 export { default as Logo } from "./Logo/Logo"
+export { default as MediaElement } from "./MediaElement/MediaElement"

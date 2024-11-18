@@ -1,26 +1,25 @@
 import { Badge, Card, Flex, Heading, Inset, Link, Slider, Text } from "@radix-ui/themes"
 import { formatCurrency } from "lib/currency"
+import { type Campaign } from "types/campaign"
+import { dateHandler, mediaMetadataManager } from "utils"
 import { RoutesMap } from "types/routes"
 
-export type CampaignProps = {
-  id: string
-  title: string
-  remainingDays: number
-  amountRaised: number
-  goal: number
-  thumbnail: string
-  currency?: string
-}
-
-export default function Campaign({
+export default async function Campaign({
   id,
-  title,
-  remainingDays,
-  amountRaised,
-  goal,
-  thumbnail,
+  name,
+  description,
+  startDate,
+  endDate,
+  fundingGoal,
+  raisedFunding,
+  files,
   currency = "USD",
-}: CampaignProps) {
+}: Campaign) {
+  let coverMedia: React.ReactNode | null = null
+  if (files && files.length > 0) {
+    coverMedia = await mediaMetadataManager.createMediaElement(files[0]!.url)
+  }
+
   return (
     <Link href={RoutesMap.CAMPAIGNS + `/${id}`} style={{ color: "#333333" }} className="flex-1">
       <Card
@@ -33,7 +32,8 @@ export default function Campaign({
         }}
       >
         <Inset clip="border-box" side="top">
-          <img src={thumbnail} alt={title} className="h-full max-h-36 w-full object-cover" />
+          {/* <img src={thumbnail} alt={name} className="h-full max-h-36 w-full object-cover" /> */}
+          {coverMedia}
         </Inset>
         <Badge
           radius="full"
@@ -41,14 +41,20 @@ export default function Campaign({
           className="absolute left-3 top-3 p-2 text-lg uppercase"
           size="3"
         >
-          {remainingDays} days left
+          {/* Calculate days left using start and end date */}
+          {dateHandler.getDaysBetween(startDate, endDate)}
+          days left
         </Badge>
         <Flex direction="column" gap="5" py="3">
           <Heading size="5" weight="bold">
-            {title}
+            {name}
           </Heading>
-          <Slider max={goal} size="3" color="green" value={[amountRaised]} />
+          <Slider max={fundingGoal} size="3" color="green" value={[raisedFunding]} />
         </Flex>
+        {/* Campaign description if any */}
+        <Text size="3" className="px-3 py-3 text-[#777777]">
+          {description}
+        </Text>
         <Inset clip="border-box" side="bottom" mt="4">
           <Flex justify="between" align="center" gap="5" className="px-3 py-5" style={{ backgroundColor: "#CBEAD240" }}>
             <Flex direction="column" gap="1" className="flex-1 text-center">
@@ -56,7 +62,7 @@ export default function Campaign({
                 Raised
               </Text>
               <Text size="3" weight="bold">
-                {formatCurrency(amountRaised, currency)}
+                {formatCurrency(raisedFunding, currency)}
               </Text>
             </Flex>
             <Flex direction="column" gap="1" className="flex-1 text-center">
@@ -64,7 +70,7 @@ export default function Campaign({
                 Goal
               </Text>
               <Text size="3" weight="bold">
-                {formatCurrency(goal, currency)}
+                {formatCurrency(fundingGoal, currency)}
               </Text>
             </Flex>
             <Flex direction="column" gap="1" className="flex-1 text-center">
@@ -72,7 +78,7 @@ export default function Campaign({
                 Left
               </Text>
               <Text size="3" weight="bold">
-                {formatCurrency(goal - amountRaised, currency)}
+                {formatCurrency(fundingGoal - raisedFunding, currency)}
               </Text>
             </Flex>
           </Flex>

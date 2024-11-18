@@ -1,4 +1,4 @@
-import { Spinner } from "@radix-ui/themes"
+import { Flex, Spinner } from "@radix-ui/themes"
 import Sidebar, { SidebarItem } from "components/ui/dashboard/sidebar"
 import { UserProvider } from "components/user-provider"
 import { RoutesMap } from "types/routes"
@@ -32,7 +32,13 @@ async function DashboardLayout({ user, funder }: DashboardLayoutProps) {
   }
 
   return (
-    <Suspense fallback={<Spinner size="3" />}>
+    <Suspense
+      fallback={
+        <Flex justify="center" align="center" height="100vh">
+          <Spinner />
+        </Flex>
+      }
+    >
       <UserProvider initialUser={userData}>
         <div className="flex h-screen bg-[#FAFAFA]">
           <Sidebar items={menuItems[userData.role]} mmi={4} />

@@ -23,7 +23,7 @@ export default function Page() {
           </Text>
           <TextField.Root
             placeholder="Enter your first name"
-            name="firstName"
+            name="firstname"
             required
             style={{ backgroundColor: "white" }}
             size="3"
@@ -35,7 +35,7 @@ export default function Page() {
           </Text>
           <TextField.Root
             placeholder="Enter your last name"
-            name="lastName"
+            name="lastname"
             required
             style={{ backgroundColor: "white" }}
             size="3"

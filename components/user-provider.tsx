@@ -5,7 +5,7 @@ import { User } from "types/user"
 import useStore from "lib/stores/app-store"
 
 interface UserContextType {
-  user: User
+  user?: User
   refreshUserData: () => Promise<void>
 }
 
@@ -14,7 +14,10 @@ interface UserProviderProps {
   children: React.ReactNode
 }
 
-export const UserContext = createContext<UserContextType | null>(null)
+export const UserContext = createContext<UserContextType>({
+  user: undefined,
+  refreshUserData: async () => {},
+})
 
 interface UserProviderProps {
   initialUser: User

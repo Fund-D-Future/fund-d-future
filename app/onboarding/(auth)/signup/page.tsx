@@ -82,14 +82,14 @@ export default function Page() {
                 </Text>
                 <TextField.Root
                   placeholder="Enter your first name"
-                  name="firstName"
+                  name="firstname"
                   required
                   style={{ backgroundColor: "#FAFAFA" }}
                   size="3"
                 />
-                {state?.errors?.firstName && (
+                {state?.errors?.firstname && (
                   <Text size="2" weight="bold" className="text-red-500" as="p">
-                    {state.errors.firstName[0]}
+                    {state.errors.firstname[0]}
                   </Text>
                 )}
               </Box>
@@ -99,14 +99,14 @@ export default function Page() {
                 </Text>
                 <TextField.Root
                   placeholder="Enter your last name"
-                  name="lastName"
+                  name="lastname"
                   required
                   style={{ backgroundColor: "#FAFAFA" }}
                   size="3"
                 />
-                {state?.errors?.lastName && (
+                {state?.errors?.lastname && (
                   <Text size="2" weight="bold" className="text-red-500" as="p">
-                    {state.errors.lastName[0]}
+                    {state.errors.lastname[0]}
                   </Text>
                 )}
               </Box>
