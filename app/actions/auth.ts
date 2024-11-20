@@ -118,7 +118,11 @@ export async function loginUser(email: string, password: string) {
 
     // redirect to dashboard after successful login
     redirect(RoutesMap.DASHBOARD)
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message && error.message.includes("NEXT_REDIRECT")) {
+      throw error
+    }
+
     return { message: (error as Error).message, code: "LOGIN_FAILED" }
   }
 }
