@@ -22,7 +22,6 @@ export default function Page() {
         limit: searchParams.get("limit") || "50",
       })
     ).then((data) => {
-      console.log(data)
       setCampaigns(data)
     })
   }, [])

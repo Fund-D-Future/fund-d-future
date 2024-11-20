@@ -5,15 +5,19 @@ import { RoutesMap } from "types/routes"
 const PROTECTED_ROUTES = ["/dashboard"]
 
 export async function middleware(req: NextRequest) {
-  const isProtectedRoute = PROTECTED_ROUTES.some((route) => req.nextUrl.pathname.startsWith(route))
-  if (isProtectedRoute) {
-    const session = await getSession()
-    if (!session) {
-      return NextResponse.redirect(new URL(RoutesMap.LOGIN, req.url))
+  try {
+    const isProtectedRoute = PROTECTED_ROUTES.some((route) => req.nextUrl.pathname.startsWith(route))
+    if (isProtectedRoute) {
+      const session = await getSession()
+      if (!session) {
+        return NextResponse.redirect(new URL(RoutesMap.LOGIN, req.url))
+      }
     }
-  }
 
-  return NextResponse.next()
+    return NextResponse.next()
+  } catch {
+    return Response.error()
+  }
 }
 
 export const config = {

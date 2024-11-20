@@ -25,7 +25,6 @@ type DashboardLayoutProps = {
 
 async function DashboardLayout({ user, funder }: DashboardLayoutProps) {
   const userData = await getUserData()
-  console.log(userData)
   return (
     <Suspense
       fallback={

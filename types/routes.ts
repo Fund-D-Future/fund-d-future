@@ -9,7 +9,7 @@ export enum RoutesMap {
   RESET_PASSWORD = "/onboarding/reset-password",
 
   DASHBOARD = "/dashboard",
-  CAMPAIGNS = "/dashboard/campaigns",
+  CAMPAIGNS = "/campaigns",
   NEW_CAMPAIGN = "/dashboard/new-campaign",
   PROFILE = "/dashboard/profile",
   SETTINGS = "/dashboard/settings",

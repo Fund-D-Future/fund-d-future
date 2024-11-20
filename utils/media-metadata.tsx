@@ -56,9 +56,7 @@ class MediaMetadataManager {
       } else if (type === "audio") {
         metadata.duration = await this.getAudioDurationFromUrl(url)
       }
-    } catch (error) {
-      console.error("Error getting URL metadata:", error)
-    }
+    } catch (error) {}
 
     return metadata
   }
@@ -89,9 +87,7 @@ class MediaMetadataManager {
       } else if (type === "audio") {
         metadata.duration = await this.getAudioDuration(file)
       }
-    } catch (error) {
-      console.error("Error getting file metadata:", error)
-    }
+    } catch (error) {}
 
     return metadata
   }
@@ -122,9 +118,7 @@ class MediaMetadataManager {
       if (response.ok) {
         return response.headers
       }
-    } catch (error) {
-      console.error("Error fetching headers:", error)
-    }
+    } catch (error) {}
     return null
   }
 
