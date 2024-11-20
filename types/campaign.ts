@@ -40,6 +40,7 @@ export interface CampaignWallet {
 
 export interface Campaign {
   id: string
+  status?: CampaignStatus
   name: string
   description: string
   fundingGoal: number

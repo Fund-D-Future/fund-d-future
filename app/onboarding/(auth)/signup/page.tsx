@@ -7,15 +7,11 @@ import { Button, PasswordField } from "components/shared"
 import { RoutesMap } from "types/routes"
 import { UserRole } from "lib/definitions"
 import { ArrowLeft, ChevronRight } from "lucide-react"
-import { useSearchParams } from "next/navigation"
 import { useFormState, useFormStatus } from "react-dom"
 import { useNotificationStore } from "lib/stores/notification-store"
 import { useEffect } from "react"
 
-export default function Page() {
-  const searchParams = useSearchParams()
-  const role = searchParams.get("role") as UserRole | null
-
+export default function Page({ searchParams }: { searchParams: Record<string, string> }) {
   const { addNotification } = useNotificationStore()
   const [state, action] = useFormState(signup, undefined)
   const { pending } = useFormStatus()
@@ -126,14 +122,14 @@ export default function Page() {
             />
             <Box className="space-y-3">
               <Flex direction="column">
-                {role ? (
-                  <input type="hidden" name="role" value={role} />
+                {searchParams.role ? (
+                  <input type="hidden" name="role" value={searchParams.role} />
                 ) : (
                   <>
                     <Text size="4" weight="medium">
                       Role
                     </Text>
-                    <Select.Root name="role" required defaultValue={role || undefined} size="3">
+                    <Select.Root name="role" required defaultValue={searchParams.role} size="3">
                       <Select.Trigger
                         className="w-full"
                         style={{ backgroundColor: "#FAFAFA" }}

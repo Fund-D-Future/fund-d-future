@@ -1,8 +1,6 @@
 import { Flex, Spinner } from "@radix-ui/themes"
 import Sidebar, { SidebarItem } from "components/ui/dashboard/sidebar"
 import { UserProvider } from "components/user-provider"
-import { RoutesMap } from "types/routes"
-import { redirect } from "next/navigation"
 import { Suspense } from "react"
 import { User } from "types/user"
 import { getUserData } from "app/actions/auth"
