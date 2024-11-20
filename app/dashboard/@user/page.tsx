@@ -4,7 +4,7 @@ import { Box, Button, Container, Flex, Heading, Text } from "@radix-ui/themes"
 import { CampaignsPreview } from "components/icons"
 import { Button as InternalButton } from "components/shared"
 import {
-  Campaign,
+  CampaignCard,
   ProfileStrength,
   RecentDonations,
   RewardsList,
@@ -57,7 +57,7 @@ export default function Page() {
         {(user?.campaigns?.length ?? 0) > 0 ? (
           <Flex gap="5" py="5" overflowX="auto">
             {user!.campaigns.map((campaign) => (
-              <Campaign {...campaign} key={campaign.id} />
+              <CampaignCard {...campaign} key={campaign.id} />
             ))}
           </Flex>
         ) : (

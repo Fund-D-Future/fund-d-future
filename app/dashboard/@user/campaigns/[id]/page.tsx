@@ -8,36 +8,37 @@ import { notFound } from "next/navigation"
 import { Campaign } from "types/campaign"
 import { RoutesMap } from "types/routes"
 import { dateHandler, mediaMetadataManager } from "utils"
-import { createApiClient } from "utils/api"
 
 async function getCampaignDetails(slug: string): Promise<Campaign | null> {
   try {
-    const api = await createApiClient()
-    const response = await api.fetch(`${env.API_URL}/campaigns/${slug}`)
+    const response = await fetch(`${env.API_URL}/campaigns/${slug}`)
     if (!response.ok) {
       throw new Error("Failed to fetch campaign details")
     }
 
-    const { body: campaign } = (await response.json()) as { body: Campaign }
-    return campaign
+    return response.json() as Promise<Campaign>
   } catch (error) {
     return null
   }
 }
 
-async function getCampaignAnalysis(slug: string, text?: string): Promise<any | null> {
+async function getCampaignAnalysis(data: {
+  name: string
+  description?: string
+  target_amount: number
+  has_visuals: boolean
+}): Promise<any | null> {
   try {
-    const response = await fetch(`${env.API_URL}/ai/campaigns/analyse`, {
+    const response = await fetch(`https://funddfuture-ml.onrender.com/analyze_campaign`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ campaignId: slug, text }),
+      body: JSON.stringify(data),
     })
     if (!response.ok) {
       throw new Error("Failed to fetch campaign analysis")
     }
 
-    const { body: analysis } = (await response.json()) as { body: any }
-    return analysis
+    return response.json() as Promise<any>
   } catch (error) {
     return null
   }
@@ -47,15 +48,20 @@ export default async function Page({
   params,
 }: {
   params: {
-    campaignId: string
+    id: string
   }
 }) {
-  const details = await getCampaignDetails(params.campaignId)
+  const details = await getCampaignDetails(params.id)
   if (!details) {
     return notFound()
   }
 
-  const analysis = await getCampaignAnalysis(params.campaignId, details?.description)
+  const analysis = await getCampaignAnalysis({
+    name: details.name,
+    description: details.description,
+    target_amount: details.fundingGoal,
+    has_visuals: true,
+  })
   let coverMedia: React.ReactNode = null
   if (details?.files && details.files.length > 0) {
     coverMedia = await mediaMetadataManager.createMediaElement(details.files[0]!.url)
@@ -79,7 +85,9 @@ export default async function Page({
           {/* Campaign Details */}
           <header>
             <AspectRatio ratio={16 / 9} className="w-full bg-slate-100">
-              {coverMedia}
+              {coverMedia || (
+                <img src="/campaign-placeholder.jpeg" alt="Campaign Cover" className="h-full w-full object-cover" />
+              )}
             </AspectRatio>
             <Flex align="center" gap="3" my="2">
               <Badge size="3" color="green" variant="soft" radius="full">
@@ -133,24 +141,26 @@ export default async function Page({
                 </Text>
               </Flex>
             </Flex>
-            <Flex
-              align="center"
-              justify="between"
-              gap="5"
-              className="rounded-lg border border-[#0000001A] bg-white p-2"
-            >
-              <Badge size="3" color="green" variant="solid" radius="full">
-                {(analysis.score * 100).toFixed(0)}%
-              </Badge>
-              <Text size="2" weight="medium" className="flex-1">
-                {analysis.sentiment === "positive"
-                  ? "You have a high chance of getting funded"
-                  : "You have a low chance of getting funded"}
-              </Text>
-              <Button underline href="" intent="borderless" size="sm" className="justify-end py-0 text-[#056434]">
-                See how to improve your chances
-              </Button>
-            </Flex>
+            {analysis && (
+              <Flex
+                align="center"
+                justify="between"
+                gap="5"
+                className="rounded-lg border border-[#0000001A] bg-white p-2"
+              >
+                <Badge size="3" color="green" variant="solid" radius="full">
+                  {(analysis.score * 100).toFixed(0)}%
+                </Badge>
+                <Text size="2" weight="medium" className="flex-1">
+                  {analysis.sentiment === "positive"
+                    ? "You have a high chance of getting funded"
+                    : "You have a low chance of getting funded"}
+                </Text>
+                <Button underline href="" intent="borderless" size="sm" className="justify-end py-0 text-[#056434]">
+                  See how to improve your chances
+                </Button>
+              </Flex>
+            )}
             <Flex align="center" justify="between" gap="5" my="5">
               <Button intent="primary" size="lg" className="flex-1">
                 Edit Campaign

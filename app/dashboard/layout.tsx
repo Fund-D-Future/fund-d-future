@@ -27,10 +27,7 @@ type DashboardLayoutProps = {
 
 async function DashboardLayout({ user, funder }: DashboardLayoutProps) {
   const userData = await getUserData()
-  if (!user) {
-    redirect(RoutesMap.LOGIN)
-  }
-
+  console.log(userData)
   return (
     <Suspense
       fallback={

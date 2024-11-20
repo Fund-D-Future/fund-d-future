@@ -1,10 +1,13 @@
+"use client"
+
 import { Badge, Card, Flex, Heading, Inset, Link, Slider, Text } from "@radix-ui/themes"
 import { formatCurrency } from "lib/currency"
 import { type Campaign } from "types/campaign"
 import { dateHandler, mediaMetadataManager } from "utils"
 import { RoutesMap } from "types/routes"
+import { useEffect, useState } from "react"
 
-export default async function Campaign({
+export default function CampaignCard({
   id,
   name,
   description,
@@ -15,10 +18,15 @@ export default async function Campaign({
   files,
   currency = "USD",
 }: Campaign) {
-  let coverMedia: React.ReactNode | null = null
-  if (files && files.length > 0) {
-    coverMedia = await mediaMetadataManager.createMediaElement(files[0]!.url)
-  }
+  const [coverMedia, setCoverMedia] = useState<React.ReactNode | null>(null)
+
+  useEffect(() => {
+    if (files.length > 0) {
+      mediaMetadataManager.createMediaElement(files[0]!.url).then((media) => {
+        setCoverMedia(media)
+      })
+    }
+  }, [files])
 
   return (
     <Link href={RoutesMap.CAMPAIGNS + `/${id}`} style={{ color: "#333333" }} className="flex-1">
@@ -32,8 +40,9 @@ export default async function Campaign({
         }}
       >
         <Inset clip="border-box" side="top">
-          {/* <img src={thumbnail} alt={name} className="h-full max-h-36 w-full object-cover" /> */}
-          {coverMedia}
+          {coverMedia || (
+            <img src="/campaign-placeholder.jpeg" alt="Campaign Cover" className="h-full w-full object-cover" />
+          )}
         </Inset>
         <Badge
           radius="full"

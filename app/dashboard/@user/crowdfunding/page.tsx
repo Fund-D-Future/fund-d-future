@@ -1,15 +1,35 @@
 "use client"
 
-import { Box, Container, Flex, Heading, Tabs } from "@radix-ui/themes"
+import { Container, Flex, Grid, Heading, Tabs } from "@radix-ui/themes"
+import { fetchCampaigns } from "app/actions/campaigns"
 import { CampaignsPreview } from "components/icons"
-import { Campaign, CampaignProps, CreateCampaignForm } from "components/ui/dashboard"
+import { CampaignCard, CreateCampaignForm } from "components/ui/dashboard"
 import { useSearchParams } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { Campaign } from "types/campaign"
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState("all")
-  // const campaigns = useQuery("campaigns", () => fetchCampaigns(activeTab))
-  const campaigns: CampaignProps[] = []
+  const searchParams = useSearchParams()
+  const [campaigns, setCampaigns] = useState<Campaign[]>([])
+
+  useEffect(() => {
+    // fetch campaigns based on the active tab
+    fetchCampaigns(
+      new URLSearchParams({
+        status: activeTab,
+        page: searchParams.get("page") || "1",
+        limit: searchParams.get("limit") || "50",
+      })
+    ).then((data) => {
+      console.log(data)
+      setCampaigns(data)
+    })
+  }, [])
+
+  const handleNewCampaignCreation = (campaign: Campaign) => {
+    setCampaigns((prev) => [campaign, ...prev])
+  }
 
   return (
     <Container my="5">
@@ -17,7 +37,7 @@ export default function Page() {
         <Heading size="7" weight="bold" color="gray">
           Crowdfunding
         </Heading>
-        {campaigns.length > 0 && <CreateCampaignForm />}
+        {campaigns.length > 0 && <CreateCampaignForm onSubmitted={handleNewCampaignCreation} />}
       </Flex>
       <Tabs.Root value={activeTab} onValueChange={(value) => setActiveTab(value)} className="my-5">
         <Tabs.List aria-label="Campaigns" size="2" color="green">
@@ -26,21 +46,24 @@ export default function Page() {
           <Tabs.Trigger value="ended">Ended</Tabs.Trigger>
           <Tabs.Trigger value="in_review">In Review</Tabs.Trigger>
         </Tabs.List>
-        <Flex gap="5" py="5" justify="between" align="start">
-          <Tabs.Content value={activeTab} className="flex-1 rounded-lg border border-[#0000001A] bg-white py-8">
+        <Flex gap="5" py="5" justify="between" align="start" direction={{ sm: "column", md: "row" }}>
+          <Tabs.Content
+            value={activeTab}
+            className="flex-1 rounded-lg bg-white py-4 md:border md:border-[#0000001A] md:px-4"
+          >
             {campaigns.length > 0 ? (
-              <Flex gap="5" py="8" px="5" height="100%" flexGrow="1">
+              <Grid columns="3" gap="3" rows="repeat(2, max-content)" width="auto">
                 {campaigns.map((campaign) => (
-                  <Campaign {...campaign} key={campaign.id} />
+                  <CampaignCard {...campaign} key={campaign.id} />
                 ))}
-              </Flex>
+              </Grid>
             ) : (
               <Flex direction="column" align="center" justify="center" className="h-full space-y-4">
                 <CampaignsPreview />
                 <Heading size="4" weight="regular" className="text-[#777777]">
                   No active campaigns yet
                 </Heading>
-                <CreateCampaignForm />
+                <CreateCampaignForm onSubmitted={handleNewCampaignCreation} />
               </Flex>
             )}
           </Tabs.Content>

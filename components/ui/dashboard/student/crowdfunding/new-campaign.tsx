@@ -9,15 +9,18 @@ import {
   Dialog,
   Flex,
   RadioCards,
+  Spinner,
   Text,
   TextArea,
   TextField,
 } from "@radix-ui/themes"
 import { createNewCampaign } from "app/actions/campaigns"
-import { Button, CurrencySelector } from "components/shared"
+import { Button, CurrencySelector, FileInput } from "components/shared"
 import { CheckCircle2, Info } from "lucide-react"
 import { useState } from "react"
 import { FormState, NewCampaignForm } from "lib/definitions"
+import { Campaign, CampaignFeature } from "types/campaign"
+import { useNotificationStore } from "lib/stores/notification-store"
 
 const supportedCampaignDuration = [
   { value: "30d", label: "30 days" },
@@ -27,22 +30,21 @@ const supportedCampaignDuration = [
   { value: "1y", label: "1 year" },
 ]
 
-const supportedCampaignPurpose = [
-  { value: "tuition", label: "Tuition Fees" },
-  { value: "textbooks_and_study_materials", label: "Textbooks and Study Materials" },
-  { value: "accommodation_and_living_expenses", label: "Accommodation and Living Expenses" },
-  { value: "tech_equipment", label: "Tech Equipment" },
-  { value: "bootcamps_and_certifications", label: "Bootcamps and Certifications" },
-  { value: "study_abroad_or_exchange_programs", label: "Study Abroad or Exchange Programs" },
-]
+const toTitleCase = (str: string) =>
+  str
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ")
 
-export default function CreateCampaignForm() {
+export default function CreateCampaignForm({ onSubmitted }: { onSubmitted: (campaign: Campaign) => void }) {
   const [selectable, setSelectable] = useState({
     duration: supportedCampaignDuration[0]!.value,
-    purpose: [] as string[],
+    feature: [] as string[],
   })
+  const { addNotification } = useNotificationStore()
+
   const isDurationChecked = (value: string) => selectable.duration === value
-  const isPurposeChecked = (value: string) => selectable.purpose.includes(value)
+  const isPurposeChecked = (value: string) => selectable.feature.includes(value)
   const handleSelectableChange = (value: unknown, key: keyof typeof selectable) => {
     setSelectable((prev) => ({ ...prev, [key]: value }))
   }
@@ -50,10 +52,18 @@ export default function CreateCampaignForm() {
   const handleCampaignCreation = async (state: FormState<NewCampaignForm>, formData: FormData) => {
     // add the selected duration and purpose to the form data
     formData.append("duration", selectable.duration)
-    formData.append("purpose", selectable.purpose.join(","))
+    if (selectable.feature.length > 0) {
+      formData.append("feature", selectable.feature[0]!)
+    }
 
-    // create the campaign
-    return createNewCampaign(state, formData)
+    const response = await createNewCampaign(formData)
+    if ("code" in response && response.code === "CAMPAIGN_CREATION_FAILED") {
+      addNotification("error", response.message)
+    } else if ("errors" in response) {
+      return response
+    } else {
+      onSubmitted(response as Campaign)
+    }
   }
 
   const [state, action] = useFormState(handleCampaignCreation, undefined)
@@ -133,7 +143,8 @@ export default function CreateCampaignForm() {
               >
                 <TextField.Root
                   placeholder="Set a clear target amount so funders know the goal."
-                  name="goal"
+                  name="fundingGoal"
+                  type="number"
                   required
                   className="flex-1"
                   style={{ backgroundColor: "transparent", border: "none", boxShadow: "none", outline: "none" }}
@@ -145,9 +156,9 @@ export default function CreateCampaignForm() {
                   style={{ color: "black", backgroundColor: "white", border: "1px solid #0000001A" }}
                 />
               </Flex>
-              {state?.errors?.goal && (
+              {state?.errors?.fundingGoal && (
                 <Text size="2" weight="bold" className="text-red-500" as="p">
-                  {state.errors.goal[0]}
+                  {state.errors.fundingGoal[0]}
                 </Text>
               )}
             </Box>
@@ -183,6 +194,11 @@ export default function CreateCampaignForm() {
                   ))}
                 </RadioCards.Root>
               </Flex>
+              {state?.errors?.duration && (
+                <Text size="2" weight="bold" className="text-red-500" as="p">
+                  {state.errors.duration[0]}
+                </Text>
+              )}
             </Box>
             <Box className="flex-1 space-y-2">
               <Text size="3" weight="medium">
@@ -190,37 +206,39 @@ export default function CreateCampaignForm() {
               </Text>
               <Flex align="center" gap="3" asChild>
                 <CheckboxCards.Root
-                  name="purpose"
-                  value={selectable.purpose}
-                  required
-                  onValueChange={(value) => handleSelectableChange(value, "purpose")}
+                  name="feature"
+                  value={selectable.feature}
+                  onValueChange={(value) => handleSelectableChange(value, "feature")}
                   size="1"
                   color="green"
                 >
-                  {supportedCampaignPurpose.map(({ label, value }) => (
+                  {Object.entries(CampaignFeature).map(([key, value]) => (
                     <CheckboxCards.Item
                       value={value}
-                      key={label}
+                      key={key}
                       style={{ backgroundColor: isPurposeChecked(value) ? "#056434" : "#00CF6826" }}
                       className="flex items-center gap-3"
                     >
-                      <Text size="2">{label}</Text>
+                      <Text size="2">{toTitleCase(key)}</Text>
                     </CheckboxCards.Item>
                   ))}
                 </CheckboxCards.Root>
               </Flex>
+              {state?.errors?.feature && (
+                <Text size="2" weight="bold" className="text-red-500" as="p">
+                  {state.errors.feature[0]}
+                </Text>
+              )}
             </Box>
             <Box className="flex-1 space-y-2">
               <Text size="3" weight="medium">
-                Photos or Videos
+                Photo or Video
               </Text>
-              <TextField.Root
-                placeholder="A picture is worth a thousand words! Upload a photo or video to introduce yourself and your campaign."
-                name="thumbnail"
-                type="url"
+              <FileInput
+                name="file"
+                accept="image/*,video/*"
                 required
-                style={{ backgroundColor: "#FAFAFA" }}
-                size="3"
+                label="Upload a photo or video to introduce yourself and your campaign."
               />
             </Box>
             <Flex align="center" justify="end" gap="3" pt="4" className="flex-1">
@@ -230,7 +248,8 @@ export default function CreateCampaignForm() {
                 </Button>
               </Dialog.Close>
               <Button intent="primary" size="sm" type="submit" disabled={pending}>
-                Create Campaign
+                {pending && <Spinner size="3" />}
+                {pending ? "Creating..." : "Create Campaign"}
               </Button>
             </Flex>
           </form>

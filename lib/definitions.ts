@@ -1,3 +1,4 @@
+import { CampaignFeature } from "types/campaign"
 import { z } from "zod"
 
 export type UserRole = "student" | "funder"
@@ -40,20 +41,15 @@ export const newCampaignFormSchema = z.object({
     .min(10, "Description must be at least 10 characters long")
     .max(1024, "Description must be at most 512 characters long")
     .trim(),
-  goal: z.number().int().positive("Goal must be a positive number"),
+  fundingGoal: z.string().refine((value) => /^\d+(\.\d{1,2})?$/.test(value), {
+    message: "Funding goal must be a valid number with up to 2 decimal places",
+  }),
   currency: z.string().length(3, "Currency must be a 3-letter code").toUpperCase(),
   duration: z.enum(["30d", "60d", "90d", "6m", "1y"], { message: 'Must be one of "30d", "60d", "90d", "6m", "1y"' }),
-  purpose: z.array(
-    z.enum([
-      "tuition",
-      "accommodation_and_living_expenses",
-      "textbooks_and_study_materials",
-      "tech_equipment",
-      "bootcamps_and_certifications",
-      "study_abroad_or_exchange_programs",
-    ])
-  ),
-  thumbnail: z.string().url("Please enter a valid URL"),
+  feature: z.string().refine((value) => {
+    const purposes = value.split(",") as CampaignFeature[]
+    return purposes.every((purpose) => Object.values(CampaignFeature).includes(purpose))
+  }),
 })
 
 export type NewCampaignForm = z.infer<typeof newCampaignFormSchema>

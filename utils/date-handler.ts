@@ -54,10 +54,10 @@ class DateUtils {
   /**
    * Adds a specified number of days to a date
    */
-  addDays(date: string, days: number): string {
+  addDays(date: string, days: number, preserveTimestamp: boolean = true): string {
     const parsedDate = this.parseDate(date)
     parsedDate.setDate(parsedDate.getDate() + days)
-    return parsedDate.toISOString().split("T")[0] as string
+    return preserveTimestamp ? parsedDate.toISOString() : parsedDate.toISOString().split("T")[0]!
   }
 
   /**
@@ -140,6 +140,26 @@ class DateUtils {
   getQuarter(date: string): number {
     const parsedDate = this.parseDate(date)
     return Math.floor(parsedDate.getMonth() / 3) + 1
+  }
+
+  /**
+   * Convert duration string to days
+   * Supported formats: 30d, 60d, 90d, 6m, 1y
+   */
+  durationToDays(duration: string): number {
+    const durationMap: Record<string, number> = {
+      "30d": 30,
+      "60d": 60,
+      "90d": 90,
+      "6m": 180,
+      "1y": 365,
+    }
+
+    if (Object.keys(durationMap).includes(duration)) {
+      return durationMap[duration]!
+    }
+
+    return 0
   }
 }
 
