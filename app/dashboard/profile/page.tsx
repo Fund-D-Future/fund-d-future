@@ -1,5 +1,5 @@
 import { Avatar, Box, Flex, Text, TextArea, TextField } from "@radix-ui/themes"
-import { LocationSelector } from "components/ui/dashboard"
+import { LocationSelector } from "components/shared"
 import { Camera } from "lucide-react"
 
 export default function Page() {
