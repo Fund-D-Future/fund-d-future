@@ -1,13 +1,28 @@
-import { AspectRatio, Badge, Box, Container, Flex, Text, Heading, Slider, AlertDialog } from "@radix-ui/themes"
+import {
+  AspectRatio,
+  Badge,
+  Box,
+  Container,
+  Flex,
+  Text,
+  Heading,
+  Slider,
+  AlertDialog,
+  Skeleton,
+  Spinner,
+} from "@radix-ui/themes"
+import { getUserData } from "app/actions/auth"
 import { Button } from "components/shared"
+import { CampaignAnalysis, CampaignFunderActions, CampaignOwnerActions } from "components/ui/campaigns"
 import { RecentDonations } from "components/ui/dashboard"
 import { env } from "env.mjs"
 import { formatCurrency } from "lib/currency"
 import { ArrowLeft, Calendar } from "lucide-react"
 import { notFound } from "next/navigation"
+import { Suspense } from "react"
 import { Campaign } from "types/campaign"
 import { RoutesMap } from "types/routes"
-import { dateHandler, mediaMetadataManager } from "utils"
+import { constructMetadata, dateHandler, mediaMetadataManager } from "utils"
 
 async function getCampaignDetails(slug: string): Promise<Campaign | null> {
   try {
@@ -22,27 +37,7 @@ async function getCampaignDetails(slug: string): Promise<Campaign | null> {
   }
 }
 
-async function getCampaignAnalysis(data: {
-  name: string
-  description?: string
-  target_amount: number
-  has_visuals: boolean
-}): Promise<any | null> {
-  try {
-    const response = await fetch(`https://funddfuture-ml.onrender.com/analyze_campaign`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    })
-    if (!response.ok) {
-      throw new Error("Failed to fetch campaign analysis")
-    }
-
-    return response.json() as Promise<any>
-  } catch (error) {
-    return null
-  }
-}
+export const metadata = constructMetadata({ title: "FundDFuture | Campaign Details" })
 
 export default async function Page({
   params,
@@ -56,24 +51,22 @@ export default async function Page({
     return notFound()
   }
 
-  const analysis = await getCampaignAnalysis({
-    name: details.name,
-    description: details.description,
-    target_amount: details.fundingGoal,
-    has_visuals: true,
-  })
+  const user = await getUserData()
+
+  // Fetch cover media if available
   let coverMedia: React.ReactNode = null
   if (details?.files && details.files.length > 0) {
     coverMedia = await mediaMetadataManager.createMediaElement(details.files[0]!.url)
   }
 
+  // Calculate duration
   const duration = {
     days: dateHandler.getDaysBetween(details.startDate, details.endDate),
     current: dateHandler.getDaysBetween(details.startDate, new Date().toISOString()),
   }
 
   return (
-    <Container py="4">
+    <Container py="4" size="4">
       <header className="my-5">
         <Button intent="borderless" size="lg" className="justify-start px-0" href={RoutesMap.DASHBOARD}>
           <ArrowLeft className="s-6 mr-2" />
@@ -81,122 +74,105 @@ export default async function Page({
         </Button>
       </header>
       <Flex gap="4" direction={{ sm: "column", md: "row" }} justify={{ md: "between" }}>
-        <Box className="flex-1">
-          {/* Campaign Details */}
-          <header>
-            <AspectRatio ratio={16 / 9} className="w-full bg-slate-100">
-              {coverMedia || (
-                <img src="/campaign-placeholder.jpeg" alt="Campaign Cover" className="h-full w-full object-cover" />
+        <Suspense fallback={<Spinner size="3" />}>
+          <Box className="flex-1">
+            {/* Campaign Details */}
+            <header>
+              <AspectRatio ratio={16 / 9} className="w-full bg-slate-100">
+                {coverMedia || (
+                  <img src="/campaign-placeholder.jpeg" alt="Campaign Cover" className="h-full w-full object-cover" />
+                )}
+              </AspectRatio>
+              <Flex align="center" gap="3" my="2">
+                {duration.days > duration.current ? (
+                  <>
+                    <Badge size="3" color="green" variant="soft" radius="full">
+                      <Calendar size={12} />
+                      <Text size="1" weight="bold">
+                        Day {duration.current} of {duration.days}
+                      </Text>
+                    </Badge>
+                    <Text size="1" weight="medium" color="gray">
+                      {duration.days - duration.current} days left
+                    </Text>
+                  </>
+                ) : (
+                  <Badge size="3" color="red" variant="soft" radius="full">
+                    <Calendar size={12} />
+                    <Text size="1" weight="bold">
+                      Ended
+                    </Text>
+                  </Badge>
+                )}
+              </Flex>
+            </header>
+            <Flex direction="column" gap="4" my="5">
+              <Box className="space-y-3 py-3">
+                <Heading size="8" weight="medium" className="text-[#333333]">
+                  {details.name}
+                </Heading>
+                <Slider
+                  value={[details.raisedFunding]}
+                  max={details.fundingGoal}
+                  color="green"
+                  size="2"
+                  radius="full"
+                />
+              </Box>
+              <Box className="my-3 space-y-2">
+                <Heading size="4" weight="bold" color="gray">
+                  Description
+                </Heading>
+                <Text as="p" size="6" weight="medium">
+                  {details.description}
+                </Text>
+              </Box>
+              <Flex gap="3" justify="between" align="center" className="rounded-lg bg-[#CBEAD240] px-5 py-8">
+                <Flex direction="column" gap="1" className="flex-1 text-center">
+                  <Text size="4" weight="bold" className="text-[#999999]">
+                    Raised
+                  </Text>
+                  <Text size="6" weight="bold">
+                    {formatCurrency(details.raisedFunding, details.currency)}
+                  </Text>
+                </Flex>
+                <Flex direction="column" gap="1" className="flex-1 text-center">
+                  <Text size="4" weight="bold" className="text-[#999999]">
+                    Goal
+                  </Text>
+                  <Text size="6" weight="bold">
+                    {formatCurrency(details.fundingGoal, details.currency)}
+                  </Text>
+                </Flex>
+                <Flex direction="column" gap="1" className="flex-1 text-center">
+                  <Text size="4" weight="bold" className="text-[#999999]">
+                    Left
+                  </Text>
+                  <Text size="6" weight="bold">
+                    {formatCurrency(details.fundingGoal - details.raisedFunding, details.currency)}
+                  </Text>
+                </Flex>
+              </Flex>
+              {user?.id === details.owner.id ? (
+                <>
+                  <CampaignAnalysis
+                    name={details.name}
+                    has_visuals={details.files.length > 0}
+                    target_amount={details.fundingGoal}
+                    description={details.description}
+                  />
+                  <CampaignOwnerActions hasEnded={duration.current >= duration.days} />
+                </>
+              ) : (
+                <CampaignFunderActions
+                  hasEnded={duration.current >= duration.days}
+                  fundingGoal={details.fundingGoal}
+                  currency={details.currency}
+                />
               )}
-            </AspectRatio>
-            <Flex align="center" gap="3" my="2">
-              <Badge size="3" color="green" variant="soft" radius="full">
-                <Calendar size={12} />
-                <Text size="1" weight="bold">
-                  Day {duration.current} of {duration.days}
-                </Text>
-              </Badge>
-              <Text size="1" weight="medium" color="gray">
-                {duration.days - duration.current} days left
-              </Text>
             </Flex>
-          </header>
-          <Flex direction="column" gap="4" my="5">
-            <Box className="space-y-3 py-3">
-              <Heading size="8" weight="medium" className="text-[#333333]">
-                {details.name}
-              </Heading>
-              <Slider
-                value={[details.raisedFunding]}
-                max={details.fundingGoal}
-                color="green"
-                size="2"
-                radius="full"
-                highContrast
-              />
-            </Box>
-            <Flex gap="3" justify="between" align="center" className="rounded-lg bg-[#CBEAD240] px-5 py-8">
-              <Flex direction="column" gap="1" className="flex-1 text-center">
-                <Text size="4" weight="bold" className="text-[#999999]">
-                  Raised
-                </Text>
-                <Text size="6" weight="bold">
-                  {formatCurrency(details.raisedFunding, details.currency)}
-                </Text>
-              </Flex>
-              <Flex direction="column" gap="1" className="flex-1 text-center">
-                <Text size="4" weight="bold" className="text-[#999999]">
-                  Goal
-                </Text>
-                <Text size="6" weight="bold">
-                  {formatCurrency(details.fundingGoal, details.currency)}
-                </Text>
-              </Flex>
-              <Flex direction="column" gap="1" className="flex-1 text-center">
-                <Text size="4" weight="bold" className="text-[#999999]">
-                  Left
-                </Text>
-                <Text size="6" weight="bold">
-                  {formatCurrency(details.fundingGoal - details.raisedFunding, details.currency)}
-                </Text>
-              </Flex>
-            </Flex>
-            {analysis && (
-              <Flex
-                align="center"
-                justify="between"
-                gap="5"
-                className="rounded-lg border border-[#0000001A] bg-white p-2"
-              >
-                <Badge size="3" color="green" variant="solid" radius="full">
-                  {(analysis.score * 100).toFixed(0)}%
-                </Badge>
-                <Text size="2" weight="medium" className="flex-1">
-                  {analysis.sentiment === "positive"
-                    ? "You have a high chance of getting funded"
-                    : "You have a low chance of getting funded"}
-                </Text>
-                <Button underline href="" intent="borderless" size="sm" className="justify-end py-0 text-[#056434]">
-                  See how to improve your chances
-                </Button>
-              </Flex>
-            )}
-            <Flex align="center" justify="between" gap="5" my="5">
-              <Button intent="primary" size="lg" className="flex-1">
-                Edit Campaign
-              </Button>
-              <Button intent="secondary" size="lg" className="flex-1">
-                Share
-              </Button>
-              <AlertDialog.Root>
-                <AlertDialog.Trigger>
-                  <Button intent="borderless" size="lg" className="flex-1 bg-[#B20000] text-white">
-                    End Campaign
-                  </Button>
-                </AlertDialog.Trigger>
-                <AlertDialog.Content maxWidth="450px" className="space-y-5">
-                  <AlertDialog.Title>End this campaign?</AlertDialog.Title>
-                  <AlertDialog.Description>
-                    Your earnings will be added to your wallet balance and the campaign will be ended. Are you sure you
-                    want to continue?
-                  </AlertDialog.Description>
-                  <Flex gap="3" justify="end" align="center">
-                    <AlertDialog.Cancel>
-                      <Button color="gray" intent="borderless" size="sm" className="text-[#777777]">
-                        Cancel
-                      </Button>
-                    </AlertDialog.Cancel>
-                    <AlertDialog.Action>
-                      <Button intent="borderless" size="sm" className="bg-[#B20000] text-white">
-                        End Campaign
-                      </Button>
-                    </AlertDialog.Action>
-                  </Flex>
-                </AlertDialog.Content>
-              </AlertDialog.Root>
-            </Flex>
-          </Flex>
-        </Box>
+          </Box>
+        </Suspense>
         <aside className="max-w-[400px] flex-1">
           <RecentDonations />
           {/* Interactions Chart */}

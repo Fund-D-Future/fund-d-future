@@ -85,16 +85,28 @@ export async function resetPassword(token: string, password: string) {
   redirect(RoutesMap.LOGIN)
 }
 
-export async function getUserData() {
+export async function getUserData(throwError = true) {
   const api = await createApiClient()
   const response = await api.fetch(`${env.API_URL}/users/user-details`)
 
-  if (!response.ok) {
+  if (!response.ok && throwError) {
     throw new Error("Failed to fetch user data")
   }
 
-  const { body: user } = (await response.json()) as { body: User }
-  return user
+  if (!response.ok) {
+    return null
+  }
+
+  try {
+    const { body: user } = (await response.json()) as { body: User }
+    return user
+  } catch (error) {
+    if (throwError) {
+      throw error
+    }
+
+    return null
+  }
 }
 
 export async function loginUser(email: string, password: string) {
@@ -128,14 +140,12 @@ export async function loginUser(email: string, password: string) {
 }
 
 export async function logoutUser() {
-  try {
-    const api = await createApiClient()
-    const response = await api.fetch(`${env.API_URL}/auth/logout`)
+  const api = await createApiClient()
+  const response = await api.fetch(`${env.API_URL}/auth/logout`)
 
-    if (!response.ok) {
-      throw new Error("Logout failed")
-    }
-  } catch (error) {}
+  if (!response.ok) {
+    throw new Error("Logout failed")
+  }
 }
 
 export async function updateProfile(data: Partial<Omit<User, "id" | "email" | "role">>) {

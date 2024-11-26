@@ -3,7 +3,7 @@
 import { Container, Flex, Grid, Heading, Tabs } from "@radix-ui/themes"
 import { fetchCampaigns } from "app/actions/campaigns"
 import { CampaignsPreview } from "components/icons"
-import { CampaignCard, CreateCampaignForm } from "components/ui/dashboard"
+import { CreateCampaignForm, CampaignCard } from "components/shared"
 import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Campaign } from "types/campaign"
@@ -30,13 +30,14 @@ export default function Page() {
     setCampaigns((prev) => [campaign, ...prev])
   }
 
+  const isOpen = searchParams.get("open") == "1"
   return (
     <Container my="5">
       <Flex justify="between" align="center" gap="4">
         <Heading size="7" weight="bold" color="gray">
           Crowdfunding
         </Heading>
-        {campaigns.length > 0 && <CreateCampaignForm onSubmitted={handleNewCampaignCreation} />}
+        {campaigns.length > 0 && <CreateCampaignForm defaultOpen={isOpen} onSubmitted={handleNewCampaignCreation} />}
       </Flex>
       <Tabs.Root value={activeTab} onValueChange={(value) => setActiveTab(value)} className="my-5">
         <Tabs.List aria-label="Campaigns" size="2" color="green">
@@ -62,7 +63,7 @@ export default function Page() {
                 <Heading size="4" weight="regular" className="text-[#777777]">
                   No active campaigns yet
                 </Heading>
-                <CreateCampaignForm onSubmitted={handleNewCampaignCreation} />
+                <CreateCampaignForm defaultOpen={isOpen} onSubmitted={handleNewCampaignCreation} />
               </Flex>
             )}
           </Tabs.Content>

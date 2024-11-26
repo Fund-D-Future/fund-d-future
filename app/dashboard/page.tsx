@@ -2,22 +2,16 @@
 
 import { Box, Button, Container, Flex, Heading, Text } from "@radix-ui/themes"
 import { CampaignsPreview } from "components/icons"
-import { Button as InternalButton } from "components/shared"
-import {
-  CampaignCard,
-  ProfileStrength,
-  RecentDonations,
-  RewardsList,
-  UserContext,
-  WalletBalance,
-} from "components/ui/dashboard"
+import { Button as InternalButton, WalletBalance, CampaignCard } from "components/shared"
+import { ProfileStrength, RecentDonations, RewardsList } from "components/ui/dashboard"
+import { UserContext } from "components/user-provider"
 import { Eye, EyeOff, Handshake } from "lucide-react"
 import { useContext, useState } from "react"
 import { RoutesMap } from "types/routes"
 
 export default function Page() {
   const [hideBalance, setHideBalance] = useState(false)
-  const { user, refreshUserData } = useContext(UserContext)
+  const { user } = useContext(UserContext)
 
   return (
     <>
@@ -49,7 +43,7 @@ export default function Page() {
             Active Campaigns
           </Text>
           {(user?.campaigns?.length ?? 0) > 0 && (
-            <InternalButton intent="primary" size="sm" href={RoutesMap.CROWDFUNDING}>
+            <InternalButton intent="primary" size="sm" href={RoutesMap.CROWDFUNDING + "?open=1"}>
               Create New
             </InternalButton>
           )}
@@ -66,7 +60,7 @@ export default function Page() {
             <Text size="3" weight="regular" className="text-[#777777]">
               No active campaigns yet
             </Text>
-            <InternalButton intent="primary" size="sm" href={RoutesMap.CROWDFUNDING}>
+            <InternalButton intent="primary" size="sm" href={RoutesMap.CROWDFUNDING + "?open=1"}>
               Create New
             </InternalButton>
           </Flex>

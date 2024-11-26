@@ -16,7 +16,7 @@ import {
 } from "@radix-ui/themes"
 import { createNewCampaign } from "app/actions/campaigns"
 import { Button, CurrencySelector, FileInput } from "components/shared"
-import { CheckCircle2, Info } from "lucide-react"
+import { CheckCircle2 } from "lucide-react"
 import { useState } from "react"
 import { FormState, NewCampaignForm } from "lib/definitions"
 import { Campaign, CampaignFeature } from "types/campaign"
@@ -36,7 +36,13 @@ const toTitleCase = (str: string) =>
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ")
 
-export default function CreateCampaignForm({ onSubmitted }: { onSubmitted: (campaign: Campaign) => void }) {
+export default function CreateCampaignForm({
+  onSubmitted,
+  defaultOpen,
+}: {
+  onSubmitted: (campaign: Campaign) => void
+  defaultOpen?: boolean
+}) {
   const [selectable, setSelectable] = useState({
     duration: supportedCampaignDuration[0]!.value,
     feature: [] as string[],
@@ -70,7 +76,7 @@ export default function CreateCampaignForm({ onSubmitted }: { onSubmitted: (camp
   const { pending } = useFormStatus()
 
   return (
-    <Dialog.Root>
+    <Dialog.Root defaultOpen={defaultOpen}>
       <Dialog.Trigger>
         <Button intent="primary" size="lg">
           Create New
@@ -80,15 +86,10 @@ export default function CreateCampaignForm({ onSubmitted }: { onSubmitted: (camp
         <Dialog.Title size="4" weight="bold" className="bg-[#FAFAFA] p-5" style={{ color: "#333333" }}>
           Create New Campaign
         </Dialog.Title>
-        <Callout.Root color="green" mx="5" mb="3">
-          <Callout.Icon>
-            <Info size={20} />
-          </Callout.Icon>
-          <Callout.Text>
-            Start your journey by creating a new campaign. Fill in the details below to get started.
-          </Callout.Text>
-        </Callout.Root>
-        <Container pt="3" px="5" pb="5">
+        <Box pt="3" px="5" pb="5">
+          <Dialog.Description color="green" className="mb-3 block">
+            Creating a campaign is a great way to share your story and raise funds for your dreams. Let's get started!
+          </Dialog.Description>
           <form action={action} className="space-y-5">
             <Box className="flex-1 space-y-2">
               <Text size="3" weight="medium">
@@ -253,7 +254,7 @@ export default function CreateCampaignForm({ onSubmitted }: { onSubmitted: (camp
               </Button>
             </Flex>
           </form>
-        </Container>
+        </Box>
       </Dialog.Content>
     </Dialog.Root>
   )

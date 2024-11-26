@@ -61,7 +61,7 @@ export default function CampaignCard({
           <Slider max={fundingGoal} size="3" color="green" value={[raisedFunding]} />
         </Flex>
         {/* Campaign description if any */}
-        <Text size="3" className="px-3 py-3 text-[#777777]">
+        <Text size="3" className="line-clamp-2 text-ellipsis px-3 py-3 text-[#777777]">
           {description}
         </Text>
         <Inset clip="border-box" side="bottom" mt="4">

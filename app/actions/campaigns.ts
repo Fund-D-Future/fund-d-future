@@ -86,3 +86,5 @@ export const fetchCampaigns = async (query: URLSearchParams): Promise<Campaign[]
     return []
   }
 }
+
+export const endCampaign = async (formData: FormData): Promise<void> => {}

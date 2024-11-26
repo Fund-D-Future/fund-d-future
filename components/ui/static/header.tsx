@@ -10,10 +10,10 @@ export default function Header() {
         <Link href={RoutesMap.HOME} size="4" style={{ color: "#333333" }} weight="medium">
           Home
         </Link>
-        <Link href={RoutesMap.ABOUT} size="4" style={{ color: "#333333" }} weight="medium">
+        <Link href={RoutesMap.HOME + "#about"} size="4" style={{ color: "#333333" }} weight="medium">
           About
         </Link>
-        <Link href={RoutesMap.HOW_IT_WORKS} size="4" style={{ color: "#333333" }} weight="medium">
+        <Link href={RoutesMap.HOME + "#how-it-works"} size="4" style={{ color: "#333333" }} weight="medium">
           How it works
         </Link>
       </nav>
@@ -21,7 +21,7 @@ export default function Header() {
         <Button href={RoutesMap.LOGIN} intent="secondary" size="sm">
           Login
         </Button>
-        <Button href={RoutesMap.SIGNUP} intent="primary" size="sm">
+        <Button href={RoutesMap.ONBOARDING} intent="primary" size="sm">
           Sign up
         </Button>
       </Flex>

@@ -18,13 +18,9 @@ const menuItems: Record<User["role"], SidebarItem[]> = {
   ADMIN: [],
 }
 
-type DashboardLayoutProps = {
-  user: React.ReactNode
-  funder: React.ReactNode
-}
+async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const userData = (await getUserData())!
 
-async function DashboardLayout({ user, funder }: DashboardLayoutProps) {
-  const userData = await getUserData()
   return (
     <Suspense
       fallback={
@@ -36,7 +32,7 @@ async function DashboardLayout({ user, funder }: DashboardLayoutProps) {
       <UserProvider initialUser={userData}>
         <div className="flex h-screen bg-[#FAFAFA]">
           <Sidebar items={menuItems[userData.role]} mmi={4} />
-          <main className="md:pb-auto flex-1 overflow-y-auto pb-40">{userData.role === "USER" ? user : funder}</main>
+          <main className="md:pb-auto flex-1 overflow-y-auto pb-40">{children}</main>
         </div>
       </UserProvider>
     </Suspense>

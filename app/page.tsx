@@ -1,19 +1,14 @@
-import { Box, Flex, Heading, Link, Text } from "@radix-ui/themes"
+import { Box, Flex, Heading, Text } from "@radix-ui/themes"
 import { Button } from "components/shared"
 import { Header, HowWeHelp } from "components/ui/static"
 import { RoutesMap } from "types/routes"
 import { constructMetadata } from "utils"
+import { getUserData } from "./actions/auth"
 
-export const metadata = constructMetadata()
+export const metadata = constructMetadata({ title: "FundDFuture | Take control of your academic future" })
 
-export default function Web() {
-  const sectionSwitches: Record<string, string> = {
-    "how-we-help": "students",
-  }
-
-  const updateSwitch = (section: string, value: string) => {
-    sectionSwitches[section] = value
-  }
+export default async function Web() {
+  const user = await getUserData(false)
 
   return (
     <>
@@ -21,7 +16,7 @@ export default function Web() {
       <Box className="relative h-full">
         <Header />
         {/* Background video */}
-        <video autoPlay loop muted playsInline className="h-full w-full object-cover">
+        <video autoPlay loop muted playsInline className="h-full w-full object-cover" preload="auto">
           <source src="/something-beautiful-about-funding-student-education.mp4" type="video/mp4" />
           <source src="/video.webm" type="video/webm" />
           Your browser does not support the video tag.
@@ -44,16 +39,16 @@ export default function Web() {
             fair funding ecosystem, we make education more accessible to everyone.
           </Text>
           <Flex gap="5" align="center">
-            <Button href={RoutesMap.SIGNUP + "?role=student"} intent="primary" size="lg">
+            <Button href={!!user ? RoutesMap.DASHBOARD : RoutesMap.SIGNUP + "?role=student"} intent="primary" size="lg">
               Apply for Funding
             </Button>
             <Button
-              href={RoutesMap.SIGNUP + "?role=funder"}
+              href={RoutesMap.CAMPAIGNS}
               intent="secondary"
               size="lg"
               style={{ borderColor: "#fff", color: "#fff" }}
             >
-              Become a Funder
+              Fund a Campaign
             </Button>
           </Flex>
         </Flex>
