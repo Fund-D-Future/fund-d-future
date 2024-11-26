@@ -1,9 +1,9 @@
 "use client"
 
 import { Container, Flex, Grid, Heading, Tabs } from "@radix-ui/themes"
-import { fetchCampaigns } from "app/actions/campaigns"
 import { CampaignsPreview } from "components/icons"
 import { CreateCampaignForm, CampaignCard } from "components/shared"
+import { useAuth } from "hooks/use-auth"
 import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Campaign } from "types/campaign"
@@ -11,29 +11,44 @@ import { Campaign } from "types/campaign"
 export default function Page() {
   const [activeTab, setActiveTab] = useState("all")
   const searchParams = useSearchParams()
+  const { user, refreshUser } = useAuth()
   const [campaigns, setCampaigns] = useState<Campaign[]>([])
 
   useEffect(() => {
     // fetch campaigns based on the active tab
-    fetchCampaigns(
-      new URLSearchParams({
-        status: activeTab,
-        page: searchParams.get("page") || "1",
-        limit: searchParams.get("limit") || "50",
-      })
-    ).then((data) => {
-      setCampaigns(data)
-    })
-  }, [])
+    if (user?.campaigns) {
+      if (activeTab === "all") {
+        setCampaigns(user.campaigns)
+      } else {
+        setCampaigns(
+          user.campaigns.filter((campaign) => {
+            // use startDate and endDate to determine the campaign status
+            const now = new Date().getTime()
+            const startDate = new Date(campaign.startDate).getTime()
+            const endDate = new Date(campaign.endDate).getTime()
+            if (activeTab === "active") {
+              return startDate <= now && endDate >= now
+            } else if (activeTab === "ended") {
+              return endDate < now
+            } else {
+              return startDate > now
+            }
+          })
+        )
+      }
+    }
+  }, [user?.campaigns, activeTab])
 
-  const handleNewCampaignCreation = (campaign: Campaign) => {
-    setCampaigns((prev) => [campaign, ...prev])
+  const handleNewCampaignCreation = (success: boolean) => {
+    if (success) {
+      refreshUser()
+    }
   }
 
   const isOpen = searchParams.get("open") == "1"
   return (
     <Container my="5">
-      <Flex justify="between" align="center" gap="4">
+      <Flex justify="between" align="center" gap="4" px="3">
         <Heading size="7" weight="bold" color="gray">
           Crowdfunding
         </Heading>
@@ -49,7 +64,7 @@ export default function Page() {
         <Flex gap="5" py="5" justify="between" align="start" direction={{ sm: "column", md: "row" }}>
           <Tabs.Content
             value={activeTab}
-            className="flex-1 rounded-lg bg-white py-4 md:border md:border-[#0000001A] md:px-4"
+            className="flex-1 rounded-lg px-2 py-4 md:border md:border-[#0000001A] md:bg-white md:px-4"
           >
             {campaigns.length > 0 ? (
               <Grid columns="3" gap="3" rows="repeat(2, max-content)" width="auto">

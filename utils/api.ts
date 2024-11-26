@@ -9,9 +9,16 @@ export async function createApiClient() {
         throw new Error("No valid session found")
       }
 
-      const headers = new Headers(options.headers)
-      headers.set("Authorization", `Bearer ${session.accessToken}`)
+      const headers = new Headers()
+      if (options.headers) {
+        for (const [key, value] of Object.entries(options.headers)) {
+          headers.set(key, value as string)
+        }
+      }
 
+      // Add the access token to the Authorization header
+      headers.set("Authorization", `Bearer ${session.accessToken}`)
+      console.log(options.headers)
       const response = await fetch(url, {
         ...options,
         headers,

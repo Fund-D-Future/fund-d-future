@@ -32,7 +32,7 @@ export default function CampaignCard({
     <Link href={RoutesMap.CAMPAIGNS + `/${id}`} style={{ color: "#333333" }} className="flex-1">
       <Card
         size="2"
-        className="relative h-full min-w-72 rounded-full border border-[#0000000D] bg-white"
+        className="relative h-full w-full min-w-72 max-w-80 rounded-full border border-[#0000000D] bg-white"
         style={{
           display: "flex",
           flexDirection: "column",

@@ -11,14 +11,14 @@ type CampaignOwnerActionsProps = {
 export default function CampaignOwnerActions({ hasEnded }: CampaignOwnerActionsProps) {
   return (
     <Flex align="center" justify="between" gap="5" my="5">
-      <Button intent="primary" size="lg" className="flex-1">
+      <Button intent="primary" size="lg" className="flex-1" disabled={hasEnded}>
         Edit Campaign
       </Button>
       <Button intent="secondary" size="lg" className="flex-1" disabled>
         Share
       </Button>
       <AlertDialog.Root>
-        <AlertDialog.Trigger>
+        <AlertDialog.Trigger disabled={hasEnded}>
           <Button intent="borderless" size="lg" className="flex-1 bg-[#B20000] text-white">
             End Campaign
           </Button>

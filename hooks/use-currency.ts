@@ -1,11 +1,11 @@
 import { CurrencyService } from "lib/currency"
-import { useState, useCallback } from "react"
+import { useState } from "react"
 
 export function useCurrency() {
   const [loading, setLoading] = useState(false)
   const currencyService = CurrencyService.instantiate()
 
-  const convertAmount = useCallback(async (amount: number, from: string, to: string) => {
+  const convertAmount = async (amount: number, from: string, to: string) => {
     setLoading(true)
     try {
       const result = await currencyService.convert(amount, from, to)
@@ -13,7 +13,7 @@ export function useCurrency() {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }
 
   return {
     loading,

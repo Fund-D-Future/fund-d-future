@@ -1,11 +1,8 @@
-"use client"
-
 import { Badge, Box, Dialog, Flex, Heading, Skeleton, Text } from "@radix-ui/themes"
 import { RadialCircleWithDynamicNumber } from "components/icons"
 import { Button } from "components/shared"
-import { useAuth } from "hooks/use-auth"
 import { Grid2x2Plus, X } from "lucide-react"
-import { useEffect, useState } from "react"
+import { Suspense } from "react"
 
 type CampaignAnalysisResponse = {
   score: number
@@ -16,13 +13,11 @@ type CampaignAnalysisResponse = {
 }
 
 type CampaignAnalysisProps = {
-  name: string
-  description?: string
-  target_amount: number
-  has_visuals: boolean
+  data: Record<string, unknown>
+  isAuthenticated: boolean
 }
 
-async function getCampaignAnalysis(data: CampaignAnalysisProps): Promise<CampaignAnalysisResponse | null> {
+async function getCampaignAnalysis(data: CampaignAnalysisProps["data"]): Promise<CampaignAnalysisResponse | null> {
   try {
     const response = await fetch(`https://funddfuture-ml.onrender.com/analyze_campaign`, {
       method: "POST",
@@ -39,29 +34,34 @@ async function getCampaignAnalysis(data: CampaignAnalysisProps): Promise<Campaig
   }
 }
 
-export default async function CampaignAnalysis(details: CampaignAnalysisProps) {
-  const [isLoading, setIsLoading] = useState(true)
-  const [analysis, setAnalysis] = useState<CampaignAnalysisResponse | null>(null)
-  const { isAuthenticated, user } = useAuth()
-
-  useEffect(() => {
-    getCampaignAnalysis(details).then((response) => {
-      setAnalysis(response)
-      setIsLoading(false)
-    })
-  }, [isAuthenticated, user])
-
+export default async function CampaignAnalysis({ data, isAuthenticated }: CampaignAnalysisProps) {
+  const analysis = await getCampaignAnalysis(data)
   if (!analysis || !isAuthenticated) {
     return null
   }
 
   return (
-    <Skeleton
-      className="flex justify-between gap-5 rounded-lg border border-[#0000001A] bg-white p-2"
-      loading={isLoading}
+    <Suspense
+      fallback={
+        <Flex align="center" justify="between" gap="5" className="rounded-lg border border-[#0000001A] bg-white p-2">
+          <Text>
+            <Skeleton>100%</Skeleton>
+          </Text>
+          <Skeleton loading>
+            <Text size="2" weight="medium">
+              Loading analysis...
+            </Text>
+          </Skeleton>
+        </Flex>
+      }
     >
       <Flex align="center" justify="between" gap="5" className="rounded-lg border border-[#0000001A] bg-white p-2">
-        <Badge size="3" color="green" variant="solid" radius="full">
+        <Badge
+          size="3"
+          variant="solid"
+          radius="full"
+          color={analysis.score >= 75 ? "green" : analysis.score >= 50 ? "yellow" : "red"}
+        >
           {analysis.score}%
         </Badge>
         <Text size="2" weight="medium" className="flex-1">
@@ -123,6 +123,6 @@ export default async function CampaignAnalysis(details: CampaignAnalysisProps) {
           </Dialog.Content>
         </Dialog.Root>
       </Flex>
-    </Skeleton>
+    </Suspense>
   )
 }

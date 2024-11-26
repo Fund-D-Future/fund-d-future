@@ -4,13 +4,11 @@ import { Avatar, Box, Card, Flex, Heading, Link, Separator, Text } from "@radix-
 import { fetchDonations } from "app/actions/campaigns"
 import { RecentDonation, RecentDonationsPreview } from "components/icons"
 import { UserContext } from "components/user-provider"
-import { env } from "env.mjs"
 import { formatCurrency } from "lib/currency"
 import { useContext, useEffect, useState } from "react"
 import { Donation } from "types/campaign"
 import { UserRole } from "types/user"
 import { dateHandler } from "utils"
-import { createApiClient } from "utils/api"
 
 export default function RecentDonations() {
   const { user } = useContext(UserContext)

@@ -87,4 +87,19 @@ export const fetchCampaigns = async (query: URLSearchParams): Promise<Campaign[]
   }
 }
 
-export const endCampaign = async (formData: FormData): Promise<void> => {}
+export const endCampaign = async (formData: FormData): Promise<void> => {
+  // TODO: Implement this function
+}
+
+export async function getCampaignDetails(slug: string): Promise<Campaign | null> {
+  try {
+    const response = await fetch(`${env.API_URL}/campaigns/${slug}`)
+    if (!response.ok) {
+      throw new Error("Failed to fetch campaign details")
+    }
+
+    return response.json() as Promise<Campaign>
+  } catch (error) {
+    return null
+  }
+}

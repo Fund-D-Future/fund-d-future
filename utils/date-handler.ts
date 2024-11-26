@@ -161,6 +161,13 @@ class DateUtils {
 
     return 0
   }
+
+  isWithinDeadline(date: string, deadline: string): boolean {
+    const parsedDate = this.parseDate(date)
+    const parsedDeadline = this.parseDate(deadline)
+
+    return parsedDate <= parsedDeadline
+  }
 }
 
 export default new DateUtils()

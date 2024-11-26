@@ -8,10 +8,16 @@ import { UserContext } from "components/user-provider"
 import { Eye, EyeOff, Handshake } from "lucide-react"
 import { useContext, useState } from "react"
 import { RoutesMap } from "types/routes"
+import { dateHandler } from "utils"
 
 export default function Page() {
   const [hideBalance, setHideBalance] = useState(false)
   const { user } = useContext(UserContext)
+  const [activeCampaigns, setActiveCampaigns] = useState(
+    (user?.campaigns ?? []).filter((campaign) =>
+      dateHandler.isWithinDeadline(new Date().toISOString(), campaign.endDate)
+    )
+  )
 
   return (
     <>

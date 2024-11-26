@@ -88,7 +88,6 @@ export async function resetPassword(token: string, password: string) {
 export async function getUserData(throwError = true) {
   const api = await createApiClient()
   const response = await api.fetch(`${env.API_URL}/users/user-details`)
-
   if (!response.ok && throwError) {
     throw new Error("Failed to fetch user data")
   }
@@ -101,11 +100,11 @@ export async function getUserData(throwError = true) {
     const { body: user } = (await response.json()) as { body: User }
     return user
   } catch (error) {
-    if (throwError) {
-      throw error
+    if (error instanceof SyntaxError || !throwError) {
+      return null
     }
 
-    return null
+    throw error
   }
 }
 

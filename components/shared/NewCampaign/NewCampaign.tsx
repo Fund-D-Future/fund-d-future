@@ -40,7 +40,7 @@ export default function CreateCampaignForm({
   onSubmitted,
   defaultOpen,
 }: {
-  onSubmitted: (campaign: Campaign) => void
+  onSubmitted: (success: boolean) => void
   defaultOpen?: boolean
 }) {
   const [selectable, setSelectable] = useState({
@@ -68,7 +68,7 @@ export default function CreateCampaignForm({
     } else if ("errors" in response) {
       return response
     } else {
-      onSubmitted(response as Campaign)
+      onSubmitted(true)
     }
   }
 
