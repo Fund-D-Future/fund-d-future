@@ -159,5 +159,5 @@ export async function updateProfile(data: Partial<Omit<User, "id" | "email" | "r
     throw new Error("Failed to update profile")
   }
 
-  return response.json() as Promise<User>
+  return true
 }

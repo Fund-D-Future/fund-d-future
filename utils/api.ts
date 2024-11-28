@@ -18,7 +18,6 @@ export async function createApiClient() {
 
       // Add the access token to the Authorization header
       headers.set("Authorization", `Bearer ${session.accessToken}`)
-      console.log(options.headers)
       const response = await fetch(url, {
         ...options,
         headers,

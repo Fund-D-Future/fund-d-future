@@ -42,13 +42,8 @@ export default async function Web() {
             <Button href={!!user ? RoutesMap.DASHBOARD : RoutesMap.SIGNUP + "?role=student"} intent="primary" size="lg">
               Apply for Funding
             </Button>
-            <Button
-              href={RoutesMap.CAMPAIGNS}
-              intent="secondary"
-              size="lg"
-              style={{ borderColor: "#fff", color: "#fff" }}
-            >
-              Fund a Campaign
+            <Button href={RoutesMap.QUESTS} intent="secondary" size="lg" style={{ borderColor: "#fff", color: "#fff" }}>
+              Fund a Quest
             </Button>
           </Flex>
         </Flex>

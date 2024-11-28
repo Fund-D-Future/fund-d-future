@@ -16,6 +16,7 @@ export default function CompleteOnboardingPage() {
   const router = useRouter()
 
   const handleNavigate = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
     // update user information with the selected country
     try {
       await updateProfile({ residentCountry: country })

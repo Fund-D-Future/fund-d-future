@@ -1,12 +1,12 @@
 "use client"
 
 import { Avatar, Box, Card, Flex, Heading, Link, Separator, Text } from "@radix-ui/themes"
-import { fetchDonations } from "app/actions/campaigns"
+import { fetchDonations } from "app/actions/quests"
 import { RecentDonation, RecentDonationsPreview } from "components/icons"
 import { UserContext } from "components/user-provider"
 import { formatCurrency } from "lib/currency"
 import { useContext, useEffect, useState } from "react"
-import { Donation } from "types/campaign"
+import { Donation } from "types/quest"
 import { UserRole } from "types/user"
 import { dateHandler } from "utils"
 
@@ -21,14 +21,14 @@ export default function RecentDonations() {
   }, [user])
 
   return (
-    <Card className="flex-1 basis-64 border border-[#0000001A] md:basis-auto">
+    <Card className="flex-1 basis-80 border border-[#0000001A] md:basis-auto">
       <Heading size="6" weight="medium" className="py-1" style={{ color: "#666666" }}>
         Recent Donations
       </Heading>
       <Separator size="4" color="gray" />
       <Flex direction="column" gap="5" my="4">
         {donations.length > 0 ? (
-          user?.role === UserRole.STUDENT ? (
+          user?.role === UserRole.FOUNDER ? (
             donations.map((donation) => (
               <Card variant="ghost" key={donation.id}>
                 <Link href={`/donation/${donation.id}`} asChild>

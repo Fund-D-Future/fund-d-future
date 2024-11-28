@@ -1,7 +1,7 @@
-import { Campaign } from "./campaign"
+import { Quest } from "./quest"
 
 export enum UserRole {
-  STUDENT = "USER",
+  FOUNDER = "USER",
   FUNDER = "FUNDER",
   ADMIN = "ADMIN",
 }
@@ -33,7 +33,7 @@ export interface User {
   accountNonExpired?: boolean
   accountNonLocked?: boolean
   credentialsNonExpired?: boolean
-  campaigns: Campaign[]
+  campaigns: Quest[]
 }
 
 export interface AuthError {

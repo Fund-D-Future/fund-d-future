@@ -35,7 +35,7 @@ const useStore = create<StoreState>()(
         }
       },
 
-      // Campaign actions with error handling
+      // Quest actions with error handling
       createCampaign: async (campaignData) => {
         try {
           const user = get().user
@@ -62,7 +62,7 @@ const useStore = create<StoreState>()(
           set({
             error: {
               message: error instanceof Error ? error.message : "Failed to create campaign",
-              code: "CAMPAIGN_ERROR",
+              code: "QUEST_ERROR",
             },
             loading: false,
           })
@@ -127,7 +127,7 @@ const useStore = create<StoreState>()(
           set({
             error: {
               message: error instanceof Error ? error.message : "Failed to update campaign status",
-              code: "CAMPAIGN_ERROR",
+              code: "QUEST_ERROR",
             },
             loading: false,
           })

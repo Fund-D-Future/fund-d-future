@@ -1,7 +1,7 @@
 "use client"
 
 import { AlertDialog, Flex } from "@radix-ui/themes"
-import { endCampaign } from "app/actions/campaigns"
+import { endCampaign } from "app/actions/quests"
 import { Button } from "components/shared"
 
 type CampaignOwnerActionsProps = {
@@ -12,7 +12,7 @@ export default function CampaignOwnerActions({ hasEnded }: CampaignOwnerActionsP
   return (
     <Flex align="center" justify="between" gap="5" my="5">
       <Button intent="primary" size="lg" className="flex-1" disabled={hasEnded}>
-        Edit Campaign
+        Edit Quest
       </Button>
       <Button intent="secondary" size="lg" className="flex-1" disabled>
         Share
@@ -20,7 +20,7 @@ export default function CampaignOwnerActions({ hasEnded }: CampaignOwnerActionsP
       <AlertDialog.Root>
         <AlertDialog.Trigger disabled={hasEnded}>
           <Button intent="borderless" size="lg" className="flex-1 bg-[#B20000] text-white">
-            End Campaign
+            End Quest
           </Button>
         </AlertDialog.Trigger>
         <AlertDialog.Content maxWidth="450px" className="space-y-5">
@@ -37,7 +37,7 @@ export default function CampaignOwnerActions({ hasEnded }: CampaignOwnerActionsP
             </AlertDialog.Cancel>
             <AlertDialog.Action formAction={endCampaign} disabled={hasEnded}>
               <Button intent="borderless" size="sm" className="bg-[#B20000] text-white">
-                End Campaign
+                End Quest
               </Button>
             </AlertDialog.Action>
           </Flex>

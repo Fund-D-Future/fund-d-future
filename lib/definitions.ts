@@ -1,4 +1,4 @@
-import { CampaignFeature } from "types/campaign"
+import { CampaignFeature } from "types/quest"
 import { z } from "zod"
 
 export type UserRole = "student" | "funder"
@@ -14,7 +14,7 @@ export type FormState<T> =
 // Define the schema for the signup form
 export const signupFormSchema = z
   .object({
-    role: z.enum(["student", "funder"], { message: "Role must be either 'student' or 'funder'" }),
+    role: z.enum(["USER", "FUNDER"], { message: "Role must be either 'USER' or 'FUNDER'" }),
     firstname: z.string().min(2, "First name must be at least 2 characters long").trim(),
     lastname: z.string().min(2, "Last name must be at least 2 characters long").trim(),
     email: z.string().email("Please enter a valid email address").trim().toLowerCase(),

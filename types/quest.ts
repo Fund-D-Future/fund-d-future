@@ -38,7 +38,7 @@ export interface CampaignWallet {
   campaign: string
 }
 
-export interface Campaign {
+export interface Quest {
   id: string
   status?: CampaignStatus
   name: string
@@ -60,7 +60,7 @@ export interface Donation {
   id: string
   amount: number
   currency: CurrencyCode
-  campaign: Campaign
+  campaign: Quest
   donor: User
   createdAt: string
   updatedAt?: string

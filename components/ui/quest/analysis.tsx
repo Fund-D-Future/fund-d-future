@@ -79,7 +79,7 @@ export default async function CampaignAnalysis({ data, isAuthenticated }: Campai
           </Dialog.Trigger>
           <Dialog.Content size="3">
             <Box className="relative">
-              <Dialog.Title>Campaign Score</Dialog.Title>
+              <Dialog.Title>Quest Score</Dialog.Title>
               <Dialog.Close className="absolute right-2 top-1/2 -translate-y-1/2">
                 <X size={24} color="gray" />
               </Dialog.Close>

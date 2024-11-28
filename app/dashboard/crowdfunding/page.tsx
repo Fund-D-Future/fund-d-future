@@ -1,26 +1,25 @@
 "use client"
 
-import { Container, Flex, Grid, Heading, Tabs } from "@radix-ui/themes"
+import { Container, Flex, Grid, Heading, Tabs, Text } from "@radix-ui/themes"
 import { CampaignsPreview } from "components/icons"
 import { CreateCampaignForm, CampaignCard } from "components/shared"
 import { useAuth } from "hooks/use-auth"
-import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
-import { Campaign } from "types/campaign"
+import { Quest } from "types/quest"
 
-export default function Page() {
+export default function Page({ searchParams }: { searchParams: Record<string, string> }) {
   const [activeTab, setActiveTab] = useState("all")
-  const searchParams = useSearchParams()
   const { user, refreshUser } = useAuth()
-  const [campaigns, setCampaigns] = useState<Campaign[]>([])
+  const [quests, setQuests] = useState<Quest[]>([])
+  const [isOpen, setIsOpen] = useState(searchParams?.new === "true")
 
   useEffect(() => {
     // fetch campaigns based on the active tab
     if (user?.campaigns) {
       if (activeTab === "all") {
-        setCampaigns(user.campaigns)
+        setQuests(user.campaigns)
       } else {
-        setCampaigns(
+        setQuests(
           user.campaigns.filter((campaign) => {
             // use startDate and endDate to determine the campaign status
             const now = new Date().getTime()
@@ -42,17 +41,19 @@ export default function Page() {
   const handleNewCampaignCreation = (success: boolean) => {
     if (success) {
       refreshUser()
+      if (isOpen) {
+        setIsOpen(false)
+      }
     }
   }
 
-  const isOpen = searchParams.get("open") == "1"
   return (
     <Container my="5">
       <Flex justify="between" align="center" gap="4" px="3">
         <Heading size="7" weight="bold" color="gray">
           Crowdfunding
         </Heading>
-        {campaigns.length > 0 && <CreateCampaignForm defaultOpen={isOpen} onSubmitted={handleNewCampaignCreation} />}
+        {quests.length > 0 && <CreateCampaignForm defaultOpen={isOpen} onSubmitted={handleNewCampaignCreation} />}
       </Flex>
       <Tabs.Root value={activeTab} onValueChange={(value) => setActiveTab(value)} className="my-5">
         <Tabs.List aria-label="Campaigns" size="2" color="green">
@@ -61,28 +62,38 @@ export default function Page() {
           <Tabs.Trigger value="ended">Ended</Tabs.Trigger>
           <Tabs.Trigger value="in_review">In Review</Tabs.Trigger>
         </Tabs.List>
-        <Flex gap="5" py="5" justify="between" align="start" direction={{ sm: "column", md: "row" }}>
+        <Flex gap="5" py="5" justify="between" align="start" direction={{ initial: "column", xs: "column", lg: "row" }}>
           <Tabs.Content
             value={activeTab}
             className="flex-1 rounded-lg px-2 py-4 md:border md:border-[#0000001A] md:bg-white md:px-4"
           >
-            {campaigns.length > 0 ? (
-              <Grid columns="3" gap="3" rows="repeat(2, max-content)" width="auto">
-                {campaigns.map((campaign) => (
-                  <CampaignCard {...campaign} key={campaign.id} />
+            {quests.length > 0 ? (
+              <Flex direction={{ xs: "column", sm: "row" }} wrap="wrap" gap="3" width="auto">
+                {quests.map((quest) => (
+                  <CampaignCard quest={quest} fillWidth key={quest.id} />
                 ))}
-              </Grid>
+              </Flex>
             ) : (
               <Flex direction="column" align="center" justify="center" className="h-full space-y-4">
                 <CampaignsPreview />
                 <Heading size="4" weight="regular" className="text-[#777777]">
-                  No active campaigns yet
+                  No active quests yet
                 </Heading>
                 <CreateCampaignForm defaultOpen={isOpen} onSubmitted={handleNewCampaignCreation} />
               </Flex>
             )}
           </Tabs.Content>
-          <aside className="max-w-md"></aside>
+          <aside className="w-full flex-grow-0 md:max-w-sm">
+            {/* Interaction Chart */}
+            <div className="w-full space-y-5 rounded-lg border border-[#0000001A] bg-white p-5">
+              <Heading size="3" weight="bold" className="text-[#777777]">
+                Interactions Chart
+              </Heading>
+              <Text as="p" size="2" weight="regular" className="text-[#777777]">
+                Coming soon...
+              </Text>
+            </div>
+          </aside>
         </Flex>
       </Tabs.Root>
     </Container>

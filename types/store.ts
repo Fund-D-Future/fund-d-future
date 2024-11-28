@@ -1,4 +1,4 @@
-import { Campaign } from "./campaign"
+import { Quest } from "./quest"
 import { AuthError, User } from "./user"
 
 export interface StoreState {
@@ -8,7 +8,7 @@ export interface StoreState {
   error: AuthError | null
 
   // Feature states
-  campaigns: Campaign[]
+  campaigns: Quest[]
 
   // Auth actions
   setUser: (user: User | null) => void
@@ -17,8 +17,8 @@ export interface StoreState {
   refreshUser: () => Promise<void>
   clearError: () => void
 
-  // Campaign actions
-  createCampaign: (campaignData: Omit<Campaign, "id" | "raisedAmount" | "donors">) => Promise<void>
+  // Quest actions
+  createCampaign: (campaignData: Omit<Quest, "id" | "raisedAmount" | "donors">) => Promise<void>
   donateToCampaign: (campaignId: string, amount: number) => Promise<void>
-  updateCampaignStatus: (campaignId: string, status: Campaign["status"]) => Promise<void>
+  updateCampaignStatus: (campaignId: string, status: Quest["status"]) => Promise<void>
 }

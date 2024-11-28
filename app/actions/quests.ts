@@ -2,11 +2,11 @@
 
 import { env } from "env.mjs"
 import { newCampaignFormSchema } from "lib/definitions"
-import { Campaign, Donation } from "types/campaign"
+import { Quest, Donation } from "types/quest"
 import { dateHandler } from "utils"
 import { createApiClient } from "utils/api"
 
-export async function createNewCampaign(formData: FormData) {
+export async function createNewQuest(formData: FormData) {
   const api = await createApiClient()
 
   try {
@@ -34,26 +34,23 @@ export async function createNewCampaign(formData: FormData) {
     })
 
     if (!response.ok) {
-      throw new Error("Campaign creation failed")
+      throw new Error("Quest creation failed")
     }
 
-    const campaign = (await response.json()) as Campaign
-
-    // upload the campaign file before returning the campaign
-    if (file) {
-      const fileData = new FormData()
-      fileData.append("file", file as Blob)
-      fileData.append("campaign", campaign.id)
-      await api.fetch(`${env.API_URL}/${campaign.id}/upload`, {
-        method: "POST",
-        body: fileData,
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-    }
-
-    return campaign
+    // upload the quest file before returning the quest
+    // if (file) {
+    //   const fileData = new FormData()
+    //   fileData.append("file", file as Blob)
+    //   fileData.append("quest", quest.id)
+    //   await api.fetch(`${env.API_URL}/${quest.id}/upload`, {
+    //     method: "POST",
+    //     body: fileData,
+    //     headers: { "Content-Type": "multipart/form-data" },
+    //   })
+    // }
+    return true
   } catch (error) {
-    return { message: (error as Error).message, code: "CAMPAIGN_CREATION_FAILED" }
+    return { message: (error as Error).message, code: "QUEST_CREATION_FAILED" }
   }
 }
 
@@ -73,7 +70,7 @@ export const fetchDonations = async (): Promise<Donation[]> => {
   }
 }
 
-export const fetchCampaigns = async (query: URLSearchParams): Promise<Campaign[]> => {
+export const fetchCampaigns = async (query: URLSearchParams): Promise<Quest[]> => {
   const api = await createApiClient()
   try {
     const response = await api.fetch(`${env.API_URL}/campaigns?${query.toString()}`)
@@ -81,7 +78,7 @@ export const fetchCampaigns = async (query: URLSearchParams): Promise<Campaign[]
       return []
     }
 
-    return (await response.json()) as Campaign[]
+    return (await response.json()) as Quest[]
   } catch (error) {
     return []
   }
@@ -91,14 +88,14 @@ export const endCampaign = async (formData: FormData): Promise<void> => {
   // TODO: Implement this function
 }
 
-export async function getCampaignDetails(slug: string): Promise<Campaign | null> {
+export async function getCampaignDetails(slug: string): Promise<Quest | null> {
   try {
     const response = await fetch(`${env.API_URL}/campaigns/${slug}`)
     if (!response.ok) {
-      throw new Error("Failed to fetch campaign details")
+      throw new Error("Failed to fetch quest details")
     }
 
-    return response.json() as Promise<Campaign>
+    return response.json() as Promise<Quest>
   } catch (error) {
     return null
   }

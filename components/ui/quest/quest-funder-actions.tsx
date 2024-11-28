@@ -18,6 +18,7 @@ export default function CampaignFunderActions({ hasEnded, fundingGoal, currency 
   const [donation, setDonation] = useState({
     amount: 0,
     currency: "USD",
+    email: "",
   })
   const [percentage, setPercentage] = useState(0.0)
 
@@ -39,7 +40,7 @@ export default function CampaignFunderActions({ hasEnded, fundingGoal, currency 
       <Dialog.Root>
         <Dialog.Trigger disabled={hasEnded}>
           <Button intent="primary" size="lg" className="flex-1">
-            Fund Campaign
+            Fund Quest
           </Button>
         </Dialog.Trigger>
         <Dialog.Content size="3">
@@ -51,36 +52,54 @@ export default function CampaignFunderActions({ hasEnded, fundingGoal, currency 
           </Box>
           <Flex direction="column" gap="5" justify="between" mt="5">
             <Flex direction="column" gap="3">
-              <Text size="4" weight="medium">
-                How much are you donating?
-              </Text>
-              <Flex
-                align="end"
-                className="relative flex-1 space-y-2 border-b-2 border-[#00000030]"
-                gap="3"
-                pb="3"
-                mb="3"
-              >
+              <Box className="space-y-3">
+                <Text size="4" weight="medium">
+                  Email address
+                </Text>
                 <TextField.Root
-                  placeholder="Enter amount here..."
-                  name="amount"
-                  type="number"
-                  value={donation.amount || ""}
-                  onChange={(e) => setDonation({ ...donation, amount: +e.target.value })}
+                  placeholder="Enter email here..."
+                  name="email"
+                  type="email"
                   required
                   radius="small"
-                  style={{ outline: "none", fontSize: "1.5rem", fontWeight: "bold" }}
-                  className="flex-1 border-l-4 border-green-500"
+                  style={{ outline: "none" }}
+                  onChange={(e) => setDonation({ ...donation, email: e.target.value })}
+                  className="flex-1"
                   size="3"
                 />
-                <CurrencySelector
-                  value={donation.currency}
-                  onChange={(currency) => setDonation({ ...donation, currency })}
-                  style={{
-                    color: "#333333",
-                  }}
-                />
-              </Flex>
+              </Box>
+              <Box className="space-y-3">
+                <Text size="4" weight="medium">
+                  How much are you donating?
+                </Text>
+                <Flex
+                  align="end"
+                  className="relative flex-1 space-y-2 border-b-2 border-[#00000030]"
+                  gap="3"
+                  pb="3"
+                  mb="3"
+                >
+                  <TextField.Root
+                    placeholder="Enter amount here..."
+                    name="amount"
+                    type="number"
+                    value={donation.amount || ""}
+                    onChange={(e) => setDonation({ ...donation, amount: +e.target.value })}
+                    required
+                    radius="small"
+                    style={{ outline: "none", fontSize: "1.5rem", fontWeight: "bold" }}
+                    className="flex-1 border-l-4 border-green-500"
+                    size="3"
+                  />
+                  <CurrencySelector
+                    value={donation.currency}
+                    onChange={(currency) => setDonation({ ...donation, currency })}
+                    style={{
+                      color: "#333333",
+                    }}
+                  />
+                </Flex>
+              </Box>
               <Badge size="3" color="green" variant="soft" radius="full" className="py-2">
                 <CheckCircle2 size={24} color="white" fill="green" />
                 <Text size="3" weight="medium">

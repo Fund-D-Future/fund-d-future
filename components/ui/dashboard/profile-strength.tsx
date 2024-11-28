@@ -20,7 +20,7 @@ export default function ProfileStrength({ value }: { value: number }) {
       className="rounded-xl bg-[#1F1F1F]"
       flexGrow="1"
       flexShrink="0"
-      flexBasis="256px"
+      flexBasis="320px"
     >
       <Heading size="4" color="yellow" weight="bold" className="p-5">
         Profile Strength

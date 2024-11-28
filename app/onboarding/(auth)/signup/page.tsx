@@ -5,11 +5,11 @@ import { signup } from "app/actions/auth"
 import { Google } from "components/icons"
 import { Button, PasswordField } from "components/shared"
 import { RoutesMap } from "types/routes"
-import { UserRole } from "lib/definitions"
 import { ArrowLeft, ChevronRight } from "lucide-react"
 import { useFormState, useFormStatus } from "react-dom"
 import { useNotificationStore } from "lib/stores/notification-store"
 import { useEffect } from "react"
+import { UserRole } from "types/user"
 
 export default function Page({ searchParams }: { searchParams: Record<string, string> }) {
   const { addNotification } = useNotificationStore()
@@ -137,8 +137,8 @@ export default function Page({ searchParams }: { searchParams: Record<string, st
                       />
                       <Select.Content position="popper">
                         <Select.Group role="form">
-                          <Select.Item value="student">Student</Select.Item>
-                          <Select.Item value="funder">Funder</Select.Item>
+                          <Select.Item value={UserRole.FOUNDER}>Founder</Select.Item>
+                          <Select.Item value={UserRole.FUNDER}>Funder</Select.Item>
                         </Select.Group>
                       </Select.Content>
                     </Select.Root>

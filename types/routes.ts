@@ -8,14 +8,14 @@ export enum RoutesMap {
   FORGOT_PASSWORD = "/onboarding/forgot-password",
   RESET_PASSWORD = "/onboarding/reset-password",
 
-  // Campaign routes
-  CAMPAIGNS = "/campaigns",
+  // Quest routes
+  QUESTS = "/quests",
+  EDIT_QUEST = "/quests/:slug/edit",
 
   DASHBOARD = "/dashboard",
   CROWDFUNDING = "/dashboard/crowdfunding",
-  NEW_CAMPAIGN = "/dashboard/crowdfunding/new",
   NOTIFICATIONS = "/dashboard/notifications",
   PROFILE = "/dashboard/profile",
   SETTINGS = "/dashboard/settings",
-  LOGOUT = "/logout",
+  LOGOUT = "/dashboard/logout",
 }

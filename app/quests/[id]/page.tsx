@@ -1,8 +1,8 @@
 import { AspectRatio, Badge, Box, Container, Flex, Text, Heading, Slider, Spinner } from "@radix-ui/themes"
 import { getUserData } from "app/actions/auth"
-import { getCampaignDetails } from "app/actions/campaigns"
+import { getCampaignDetails } from "app/actions/quests"
 import { Button } from "components/shared"
-import { CampaignAnalysis, CampaignFunderActions, CampaignOwnerActions } from "components/ui/campaigns"
+import { CampaignAnalysis, CampaignFunderActions, CampaignOwnerActions } from "components/ui/quest"
 import { RecentDonations } from "components/ui/dashboard"
 import { formatCurrency } from "lib/currency"
 import { ArrowLeft, Calendar } from "lucide-react"
@@ -11,7 +11,7 @@ import { Suspense } from "react"
 import { RoutesMap } from "types/routes"
 import { constructMetadata, dateHandler, mediaMetadataManager } from "utils"
 
-export const metadata = constructMetadata({ title: "FundDFuture | Campaign Details" })
+export const metadata = constructMetadata({ title: "FundDFuture | Quest Details" })
 
 export default async function Page({
   params,
@@ -42,7 +42,7 @@ export default async function Page({
   return (
     <Container py="4" size="4">
       <header className="mx-3 my-5">
-        <Button intent="borderless" size="lg" className="justify-start px-0" href={RoutesMap.DASHBOARD}>
+        <Button intent="borderless" size="lg" className="justify-start px-0" href={RoutesMap.QUESTS}>
           <ArrowLeft className="s-6 mr-2" />
           <span>Back</span>
         </Button>
@@ -50,11 +50,11 @@ export default async function Page({
       <Flex gap="4" direction={{ xs: "column", md: "row" }} justify={{ md: "between" }}>
         <Suspense fallback={<Spinner size="3" />}>
           <Box className="flex-1">
-            {/* Campaign Details */}
+            {/* Quest Details */}
             <header>
               <AspectRatio ratio={16 / 9} className="w-full bg-slate-100">
                 {coverMedia || (
-                  <img src="/campaign-placeholder.jpeg" alt="Campaign Cover" className="h-full w-full object-cover" />
+                  <img src="/campaign-placeholder.jpeg" alt="Quest Cover" className="h-full w-full object-cover" />
                 )}
               </AspectRatio>
               <Flex align="center" gap="3" my="2" mx="3">
@@ -97,7 +97,7 @@ export default async function Page({
                 <Heading size="4" weight="bold" color="gray">
                   Description
                 </Heading>
-                <Text as="p" size="6" weight="medium">
+                <Text as="div" size="6" weight="medium" className="whitespace-pre-wrap">
                   {details.description}
                 </Text>
               </Box>

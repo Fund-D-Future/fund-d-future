@@ -7,12 +7,12 @@ import { redirect, RedirectType } from "next/navigation"
 import { RoutesMap } from "types/routes"
 
 const menuItems: SidebarItem[] = [
-  { label: "Home", icon: "house", href: "/dashboard", category: "Main Menu" },
-  { label: "Crowdfunding", icon: "hand-helping", href: "/dashboard/crowdfunding", category: "Main Menu" },
-  { label: "Profile", icon: "user", href: "/dashboard/profile", category: "Main Menu" },
-  { label: "Notifications", icon: "bell", href: "/notifications", category: "Others" },
-  { label: "Settings", icon: "settings", href: "/dashboard/settings", category: "Others" },
-  { label: "Logout", icon: "log-out", href: "/logout", category: "Others" },
+  { label: "Home", icon: "house", href: RoutesMap.DASHBOARD, category: "Main Menu" },
+  { label: "Crowdfunding", icon: "hand-helping", href: RoutesMap.CROWDFUNDING, category: "Main Menu" },
+  { label: "Profile", icon: "user", href: RoutesMap.PROFILE, category: "Main Menu" },
+  { label: "Notifications", icon: "bell", href: RoutesMap.NOTIFICATIONS, category: "Others" },
+  { label: "Settings", icon: "settings", href: RoutesMap.SETTINGS, category: "Others" },
+  { label: "Logout", icon: "log-out", href: RoutesMap.LOGOUT, category: "Others" },
 ]
 
 async function DashboardLayout({ children }: { children: React.ReactNode }) {

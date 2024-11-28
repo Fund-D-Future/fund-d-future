@@ -6,18 +6,23 @@ import { Button as InternalButton, WalletBalance, CampaignCard } from "component
 import { ProfileStrength, RecentDonations, RewardsList } from "components/ui/dashboard"
 import { UserContext } from "components/user-provider"
 import { Eye, EyeOff, Handshake } from "lucide-react"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { Quest } from "types/quest"
 import { RoutesMap } from "types/routes"
 import { dateHandler } from "utils"
 
 export default function Page() {
   const [hideBalance, setHideBalance] = useState(false)
   const { user } = useContext(UserContext)
-  const [activeCampaigns, setActiveCampaigns] = useState(
-    (user?.campaigns ?? []).filter((campaign) =>
-      dateHandler.isWithinDeadline(new Date().toISOString(), campaign.endDate)
+  const [activeQuests, setActiveQuests] = useState<Quest[]>([])
+
+  useEffect(() => {
+    setActiveQuests(
+      (user?.campaigns ?? []).filter((campaign) =>
+        dateHandler.isWithinDeadline(new Date().toISOString(), campaign.endDate)
+      )
     )
-  )
+  }, [user?.campaigns])
 
   return (
     <>
@@ -43,36 +48,42 @@ export default function Page() {
           </InternalButton>
         </Flex>
       </Box>
-      <Container className="my-5 mr-5 min-h-[300px] rounded-lg border border-[#0000001A] bg-white p-5">
+      <Container className="mx-3 my-5 min-h-[300px] rounded-lg border border-[#0000001A] bg-white p-5 md:ml-0">
         <header className="flex items-center justify-between gap-5">
           <Text size="3" weight="medium" className="text-[#777777]">
-            Active Campaigns
+            Active Quests
           </Text>
-          {(user?.campaigns?.length ?? 0) > 0 && (
-            <InternalButton intent="primary" size="sm" href={RoutesMap.CROWDFUNDING + "?open=1"}>
+          {(activeQuests.length ?? 0) > 0 && (
+            <InternalButton intent="primary" size="sm" href={RoutesMap.CROWDFUNDING + "?new=true"}>
               Create New
             </InternalButton>
           )}
         </header>
-        {(user?.campaigns?.length ?? 0) > 0 ? (
+        {(activeQuests.length ?? 0) > 0 ? (
           <Flex gap="5" py="5" overflowX="auto">
-            {user!.campaigns.map((campaign) => (
-              <CampaignCard {...campaign} key={campaign.id} />
+            {activeQuests.map((quest) => (
+              <CampaignCard quest={quest} key={quest.id} />
             ))}
           </Flex>
         ) : (
           <Flex direction="column" align="center" justify="center" className="h-full space-y-2">
             <CampaignsPreview />
             <Text size="3" weight="regular" className="text-[#777777]">
-              No active campaigns yet
+              No active quests yet
             </Text>
-            <InternalButton intent="primary" size="sm" href={RoutesMap.CROWDFUNDING + "?open=1"}>
+            <InternalButton intent="primary" size="sm" href={RoutesMap.CROWDFUNDING + "?new=true"}>
               Create New
             </InternalButton>
           </Flex>
         )}
       </Container>
-      <Flex direction="row" justify="between" gap="4" className="my-10 mr-5 min-h-72 bg-transparent" wrap="wrap">
+      <Flex
+        direction={{ xs: "column", md: "row" }}
+        justify="between"
+        gap="4"
+        className="my-10 mr-3 min-h-72 bg-transparent px-3 md:px-0"
+        wrap="wrap"
+      >
         <ProfileStrength value={26} />
         <RewardsList
           rewards={[

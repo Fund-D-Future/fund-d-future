@@ -1,25 +1,13 @@
 "use client"
 
 import { useFormState, useFormStatus } from "react-dom"
-import {
-  Box,
-  Callout,
-  CheckboxCards,
-  Container,
-  Dialog,
-  Flex,
-  RadioCards,
-  Spinner,
-  Text,
-  TextArea,
-  TextField,
-} from "@radix-ui/themes"
-import { createNewCampaign } from "app/actions/campaigns"
+import { Box, CheckboxCards, Dialog, Flex, RadioCards, Spinner, Text, TextArea, TextField } from "@radix-ui/themes"
+import { createNewQuest } from "app/actions/quests"
 import { Button, CurrencySelector, FileInput } from "components/shared"
 import { CheckCircle2 } from "lucide-react"
 import { useState } from "react"
 import { FormState, NewCampaignForm } from "lib/definitions"
-import { Campaign, CampaignFeature } from "types/campaign"
+import { Quest, CampaignFeature } from "types/quest"
 import { useNotificationStore } from "lib/stores/notification-store"
 
 const supportedCampaignDuration = [
@@ -55,24 +43,32 @@ export default function CreateCampaignForm({
     setSelectable((prev) => ({ ...prev, [key]: value }))
   }
 
-  const handleCampaignCreation = async (state: FormState<NewCampaignForm>, formData: FormData) => {
+  const handleQuestCreation = async (state: FormState<NewCampaignForm>, formData: FormData) => {
     // add the selected duration and purpose to the form data
     formData.append("duration", selectable.duration)
     if (selectable.feature.length > 0) {
       formData.append("feature", selectable.feature[0]!)
     }
 
-    const response = await createNewCampaign(formData)
-    if ("code" in response && response.code === "CAMPAIGN_CREATION_FAILED") {
+    const response = await createNewQuest(formData)
+    if (response === true) {
+      // clear selectable
+      setSelectable({ duration: supportedCampaignDuration[0]!.value, feature: [] })
+      onSubmitted(true)
+
+      // show success notification
+      addNotification("success", "Quest created successfully!")
+      return
+    }
+
+    if ("code" in response && response.code === "QUEST_CREATION_FAILED") {
       addNotification("error", response.message)
     } else if ("errors" in response) {
       return response
-    } else {
-      onSubmitted(true)
     }
   }
 
-  const [state, action] = useFormState(handleCampaignCreation, undefined)
+  const [state, action] = useFormState(handleQuestCreation, undefined)
   const { pending } = useFormStatus()
 
   return (
@@ -84,16 +80,16 @@ export default function CreateCampaignForm({
       </Dialog.Trigger>
       <Dialog.Content size="4" style={{ padding: 0 }}>
         <Dialog.Title size="4" weight="bold" className="bg-[#FAFAFA] p-5" style={{ color: "#333333" }}>
-          Create New Campaign
+          Create New Quest
         </Dialog.Title>
         <Box pt="3" px="5" pb="5">
           <Dialog.Description color="green" className="mb-3 block">
-            Creating a campaign is a great way to share your story and raise funds for your dreams. Let's get started!
+            Creating a quest is a great way to share your story and raise funds for your startup. Let's get started!
           </Dialog.Description>
-          <form action={action} className="space-y-5">
+          <form className="space-y-5" action={action}>
             <Box className="flex-1 space-y-2">
               <Text size="3" weight="medium">
-                Name your Campaign
+                Name your Quest
               </Text>
               <TextField.Root
                 placeholder="Give your campaign a name that captures your journey and inspires others!"
@@ -110,7 +106,7 @@ export default function CreateCampaignForm({
             </Box>
             <Box className="flex-1 space-y-2">
               <Text size="3" weight="medium">
-                Describe your Campaign
+                Describe your Quest
               </Text>
               <TextArea
                 placeholder="Tell your story! Explain why you're raising funds, how they'll help you achieve your dreams, and why this matters to you."
@@ -165,7 +161,7 @@ export default function CreateCampaignForm({
             </Box>
             <Box className="flex-1 space-y-2">
               <Text size="3" weight="medium">
-                Campaign Duration
+                Quest Duration
               </Text>
               <Flex align="center" gap="3" asChild>
                 <RadioCards.Root
@@ -231,7 +227,7 @@ export default function CreateCampaignForm({
                 </Text>
               )}
             </Box>
-            <Box className="flex-1 space-y-2">
+            {/* <Box className="flex-1 space-y-2">
               <Text size="3" weight="medium">
                 Photo or Video
               </Text>
@@ -239,9 +235,9 @@ export default function CreateCampaignForm({
                 name="file"
                 accept="image/*,video/*"
                 required
-                label="Upload a photo or video to introduce yourself and your campaign."
+                label="Upload a photo or video to introduce yourself and your quest."
               />
-            </Box>
+            </Box> */}
             <Flex align="center" justify="end" gap="3" pt="4" className="flex-1">
               <Dialog.Close>
                 <Button intent="borderless" size="sm" className="min-w-20 bg-[#FAFAFA]">
@@ -250,7 +246,7 @@ export default function CreateCampaignForm({
               </Dialog.Close>
               <Button intent="primary" size="sm" type="submit" disabled={pending}>
                 {pending && <Spinner size="3" />}
-                {pending ? "Creating..." : "Create Campaign"}
+                {pending ? "Creating..." : "Create Quest"}
               </Button>
             </Flex>
           </form>

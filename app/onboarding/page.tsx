@@ -7,7 +7,7 @@ import { Donation, GradStudent } from "components/icons"
 import { RoutesMap } from "types/routes"
 
 export const metadata: Metadata = {
-  title: "FundDFuture | Onboarding",
+  title: "FundDFuture | Onboarding New Users",
 }
 
 interface RoleCardProps {
@@ -56,16 +56,16 @@ export default function Page() {
         </header>
         <section className="flex w-full flex-col gap-8">
           <RoleCard
-            title="Student"
-            description="I'm here to seek funding opportunities for my education."
-            href={`${RoutesMap.SIGNUP}?role=student`}
+            title="Founder"
+            description="I'm here to seek funding opportunities for my startup."
+            href={`${RoutesMap.SIGNUP}?role=FOUNDER`}
           >
             <GradStudent />
           </RoleCard>
           <RoleCard
             title="Funder"
-            description="I want to support students through funding or scholarships."
-            href={`${RoutesMap.SIGNUP}?role=funder`}
+            description="I want to support founders through funding or mentorship."
+            href={`${RoutesMap.SIGNUP}?role=FUNDER`}
           >
             <Donation />
           </RoleCard>
