@@ -2,6 +2,7 @@
 
 import { Badge, Box, Dialog, Flex, Text, TextField } from "@radix-ui/themes"
 import { Button, CurrencySelector } from "components/shared"
+import { useAuth } from "hooks/use-auth"
 import { CurrencyService } from "lib/currency"
 import { CheckCircle2, X } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -15,10 +16,11 @@ type CampaignFunderActionsProps = {
 const service = CurrencyService.instantiate()
 
 export default function CampaignFunderActions({ hasEnded, fundingGoal, currency }: CampaignFunderActionsProps) {
+  const { user } = useAuth()
   const [donation, setDonation] = useState({
     amount: 0,
     currency: "USD",
-    email: "",
+    email: user?.email || "",
   })
   const [percentage, setPercentage] = useState(0.0)
 
@@ -34,6 +36,30 @@ export default function CampaignFunderActions({ hasEnded, fundingGoal, currency 
 
     calculatePercentage()
   }, [donation, fundingGoal])
+
+  const handleDonation = async (e: any) => {
+    e.preventDefault()
+
+    const identifier = donation.email.split("@")[0]
+    const [firstName, lastName] = identifier?.split(/[-.]/)!
+
+    // Step 1: save the donation data to session storage
+    sessionStorage.setItem(
+      "payment-request",
+      JSON.stringify({
+        amount: donation.amount,
+        currency: donation.currency,
+        emailAddress: donation.email,
+        firstName: user?.firstname || firstName,
+        lastName: user?.lastname || lastName || "Anonymous",
+        phoneNumber: "+2349090490312",
+        description: "Test",
+      })
+    )
+
+    // Step 2: redirect to the checkout page
+    console.log(donation)
+  }
 
   return (
     <Flex direction={{ sm: "column", md: "row" }} align="center" justify="between" gap="5" my="5">
@@ -51,8 +77,8 @@ export default function CampaignFunderActions({ hasEnded, fundingGoal, currency 
             </Dialog.Close>
           </Box>
           <Flex direction="column" gap="5" justify="between" mt="5">
-            <Flex direction="column" gap="3">
-              <Box className="space-y-3">
+            <form className="flex flex-col gap-3" onSubmit={handleDonation}>
+              <Box className="space-y-2">
                 <Text size="4" weight="medium">
                   Email address
                 </Text>
@@ -63,12 +89,13 @@ export default function CampaignFunderActions({ hasEnded, fundingGoal, currency 
                   required
                   radius="small"
                   style={{ outline: "none" }}
-                  onChange={(e) => setDonation({ ...donation, email: e.target.value })}
+                  onChange={(e) => setDonation({ ...donation, email: e.currentTarget.value })}
+                  value={donation.email}
                   className="flex-1"
                   size="3"
                 />
               </Box>
-              <Box className="space-y-3">
+              <Box className="space-y-2">
                 <Text size="4" weight="medium">
                   How much are you donating?
                 </Text>
@@ -76,8 +103,8 @@ export default function CampaignFunderActions({ hasEnded, fundingGoal, currency 
                   align="end"
                   className="relative flex-1 space-y-2 border-b-2 border-[#00000030]"
                   gap="3"
-                  pb="3"
-                  mb="3"
+                  pb="5"
+                  mb="4"
                 >
                   <TextField.Root
                     placeholder="Enter amount here..."
@@ -112,11 +139,11 @@ export default function CampaignFunderActions({ hasEnded, fundingGoal, currency 
                     Cancel
                   </Button>
                 </Dialog.Close>
-                <Button intent="primary" size="lg" className="flex-1">
+                <Button intent="primary" size="lg" className="flex-1" type="submit">
                   Give
                 </Button>
               </Flex>
-            </Flex>
+            </form>
           </Flex>
         </Dialog.Content>
       </Dialog.Root>

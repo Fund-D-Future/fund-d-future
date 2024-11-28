@@ -13,7 +13,7 @@ export default function QuestCard({ quest, fillWidth }: { quest: Quest; fillWidt
   const router = useRouter()
 
   const goToQuest = () => {
-    router.push(RoutesMap.QUESTS + `/${quest.id}`)
+    router.push(RoutesMap.QUEST.replace(":slug", quest.id))
   }
 
   useEffect(() => {

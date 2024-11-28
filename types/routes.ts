@@ -10,7 +10,10 @@ export enum RoutesMap {
 
   // Quest routes
   QUESTS = "/quests",
-  EDIT_QUEST = "/quests/:slug/edit",
+  QUEST = "/quests/:slug",
+  QUEST_COMPLETE_DONATION = "/quests/:slug/complete-donation",
+  QUEST_COMPLETE_DONATION_SUCCESS = "/quests/:slug/complete-donation/success",
+  QUEST_EDIT = "/quests/:slug/edit",
 
   DASHBOARD = "/dashboard",
   CROWDFUNDING = "/dashboard/crowdfunding",
