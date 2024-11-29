@@ -1,7 +1,7 @@
 "use client"
 
 import { AlertDialog, Flex } from "@radix-ui/themes"
-import { endCampaign } from "app/actions/quests"
+import { endQuest } from "app/actions/quests"
 import { Button } from "components/shared"
 
 type CampaignOwnerActionsProps = {
@@ -35,7 +35,7 @@ export default function CampaignOwnerActions({ hasEnded }: CampaignOwnerActionsP
                 Cancel
               </Button>
             </AlertDialog.Cancel>
-            <AlertDialog.Action formAction={endCampaign} disabled={hasEnded}>
+            <AlertDialog.Action formAction={endQuest} disabled={hasEnded}>
               <Button intent="borderless" size="sm" className="bg-[#B20000] text-white">
                 End Quest
               </Button>

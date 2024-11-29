@@ -10,15 +10,15 @@ import { Donation } from "types/quest"
 import { UserRole } from "types/user"
 import { dateHandler } from "utils"
 
-export default function RecentDonations() {
+export default function RecentDonations({ questId }: { questId: string }) {
   const { user } = useContext(UserContext)
   const [donations, setDonations] = useState<Donation[]>([])
 
   useEffect(() => {
-    if (user) {
-      fetchDonations().then((donations) => setDonations(donations))
-    }
-  }, [user])
+    fetchDonations(questId).then((donations) => {
+      setDonations(donations.slice(0, 5))
+    })
+  }, [questId])
 
   return (
     <Card className="flex-1 basis-80 border border-[#0000001A] md:basis-auto">
@@ -46,7 +46,7 @@ export default function RecentDonations() {
               </Card>
             ))
           ) : (
-            <Flex align="center" gap="3">
+            <Flex align="center" gap="3" className="px-3">
               {/* Three of the donors avatars */}
               <Flex gap="0" ml="-1">
                 {donations.slice(0, 3).map((donation) => (
@@ -54,11 +54,19 @@ export default function RecentDonations() {
                     key={donation.id}
                     src={donation.donor.avatar}
                     alt={donation.donor.firstname}
-                    fallback="/fallback-avatar.jpeg"
+                    radius="full"
+                    size="2"
+                    fallback={
+                      <img
+                        src="/fallback-avatar.jpeg"
+                        alt="Avatar"
+                        className="h-full w-full rounded-full object-cover"
+                      />
+                    }
                   />
                 ))}
               </Flex>
-              <Text size="2" weight="medium" className="flex-1 text-[#777777]">
+              <Text size="3" weight="bold" className="flex-1 text-[#777777]">
                 {donations.length > 1 ? (
                   <>
                     {donations[0]?.donor.firstname ?? "Anonymous"} and {donations.length - 1} others donated

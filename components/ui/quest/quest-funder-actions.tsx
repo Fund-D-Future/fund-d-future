@@ -3,9 +3,13 @@
 import { Badge, Box, Dialog, Flex, Text, TextField } from "@radix-ui/themes"
 import { Button, CurrencySelector } from "components/shared"
 import { useAuth } from "hooks/use-auth"
+import useBrowserStorage from "hooks/use-browser-storage"
 import { CurrencyService } from "lib/currency"
 import { CheckCircle2, X } from "lucide-react"
+import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { DonationPaymentRequest } from "types/quest"
+import { RoutesMap } from "types/routes"
 
 type CampaignFunderActionsProps = {
   hasEnded: boolean
@@ -17,12 +21,28 @@ const service = CurrencyService.instantiate()
 
 export default function CampaignFunderActions({ hasEnded, fundingGoal, currency }: CampaignFunderActionsProps) {
   const { user } = useAuth()
+  const router = useRouter()
+  const { id } = useParams()
+  const { set } = useBrowserStorage<Omit<DonationPaymentRequest, "card">>("fdf-d-data", { type: "session" })
+
   const [donation, setDonation] = useState({
     amount: 0,
     currency: "USD",
     email: user?.email || "",
   })
   const [percentage, setPercentage] = useState(0.0)
+
+  const handleChange = (key: string, value: string) => {
+    if (key === "amount") {
+      if (+value > fundingGoal) {
+        return
+      }
+
+      setDonation({ ...donation, [key]: +value })
+    } else {
+      setDonation({ ...donation, [key]: value })
+    }
+  }
 
   useEffect(() => {
     const calculatePercentage = async () => {
@@ -44,21 +64,18 @@ export default function CampaignFunderActions({ hasEnded, fundingGoal, currency 
     const [firstName, lastName] = identifier?.split(/[-.]/)!
 
     // Step 1: save the donation data to session storage
-    sessionStorage.setItem(
-      "payment-request",
-      JSON.stringify({
-        amount: donation.amount,
-        currency: donation.currency,
-        emailAddress: donation.email,
-        firstName: user?.firstname || firstName,
-        lastName: user?.lastname || lastName || "Anonymous",
-        phoneNumber: "+2349090490312",
-        description: "Test",
-      })
-    )
+    set({
+      amount: donation.amount,
+      currency: donation.currency,
+      emailAddress: donation.email,
+      firstName: user?.firstname || firstName || "Anonymous",
+      lastName: user?.lastname || lastName || "Anonymous",
+      phoneNumber: "+2349090490312",
+      description: "Test",
+    })
 
     // Step 2: redirect to the checkout page
-    console.log(donation)
+    router.push(RoutesMap.QUEST_COMPLETE_DONATION.replace(":slug", id as string))
   }
 
   return (
@@ -89,7 +106,7 @@ export default function CampaignFunderActions({ hasEnded, fundingGoal, currency 
                   required
                   radius="small"
                   style={{ outline: "none" }}
-                  onChange={(e) => setDonation({ ...donation, email: e.currentTarget.value })}
+                  onChange={(e) => handleChange("email", e.target.value)}
                   value={donation.email}
                   className="flex-1"
                   size="3"
@@ -111,7 +128,7 @@ export default function CampaignFunderActions({ hasEnded, fundingGoal, currency 
                     name="amount"
                     type="number"
                     value={donation.amount || ""}
-                    onChange={(e) => setDonation({ ...donation, amount: +e.target.value })}
+                    onChange={(e) => handleChange("amount", e.target.value)}
                     required
                     radius="small"
                     style={{ outline: "none", fontSize: "1.5rem", fontWeight: "bold" }}
@@ -120,7 +137,7 @@ export default function CampaignFunderActions({ hasEnded, fundingGoal, currency 
                   />
                   <CurrencySelector
                     value={donation.currency}
-                    onChange={(currency) => setDonation({ ...donation, currency })}
+                    onChange={(value) => handleChange("currency", value)}
                     style={{
                       color: "#333333",
                     }}
@@ -135,7 +152,7 @@ export default function CampaignFunderActions({ hasEnded, fundingGoal, currency 
               </Badge>
               <Flex gap="5" justify="between" align="center" mt="9">
                 <Dialog.Close>
-                  <Button intent="borderless" size="lg" className="flex-1 bg-[#00CF681A] text-[#00CF68]">
+                  <Button type="button" intent="borderless" size="lg" className="flex-1 bg-[#00CF681A] text-[#00CF68]">
                     Cancel
                   </Button>
                 </Dialog.Close>

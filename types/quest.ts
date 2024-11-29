@@ -65,3 +65,20 @@ export interface Donation {
   createdAt: string
   updatedAt?: string
 }
+
+export type DonationPaymentRequest = {
+  emailAddress: string
+  currency: string
+  amount: number
+  firstName: string
+  lastName: string
+  phoneNumber: string
+  description: string
+  // card details
+  card: {
+    expiryMonth: string
+    expiryYear: string
+    cardNumber: string
+    securityCode: string
+  }
+}

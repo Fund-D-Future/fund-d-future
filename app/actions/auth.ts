@@ -70,10 +70,10 @@ export async function sendResetPasswordLink(formData: FormData) {
   }
 }
 
-export async function resetPassword(token: string, password: string) {
-  const response = await fetch(`${env.API_URL}/users/reset-password`, {
-    method: "POST",
-    body: JSON.stringify({ token, password }),
+export async function resetPassword({ token, password, email }: { token: string; password: string; email: string }) {
+  const response = await fetch(`${env.API_URL}/users/reset-password?token=${token}`, {
+    method: "PUT",
+    body: JSON.stringify({ password, email }),
     headers: { "Content-Type": "application/json" },
   })
 

@@ -2,7 +2,7 @@
 
 import { env } from "env.mjs"
 import { newCampaignFormSchema } from "lib/definitions"
-import { Quest, Donation } from "types/quest"
+import { Quest, Donation, DonationPaymentRequest } from "types/quest"
 import { dateHandler } from "utils"
 import { createApiClient } from "utils/api"
 
@@ -54,23 +54,23 @@ export async function createNewQuest(formData: FormData) {
   }
 }
 
-export const fetchDonations = async (): Promise<Donation[]> => {
+export const fetchDonations = async (questId: string): Promise<Donation[]> => {
   const api = await createApiClient()
 
   try {
-    const response = await api.fetch(`${env.API_URL}/donations?limit=5`)
+    const response = await fetch(`${env.API_URL}/donations/campaign/${questId}`)
     if (!response.ok) {
       return []
     }
 
-    const { body: donations } = (await response.json()) as { body: Donation[] }
+    const donations = (await response.json()) as Donation[]
     return donations
   } catch (error) {
     return []
   }
 }
 
-export const fetchCampaigns = async (query: URLSearchParams): Promise<Quest[]> => {
+export const fetchQuests = async (query: URLSearchParams): Promise<Quest[]> => {
   const api = await createApiClient()
   try {
     const response = await api.fetch(`${env.API_URL}/campaigns?${query.toString()}`)
@@ -84,7 +84,7 @@ export const fetchCampaigns = async (query: URLSearchParams): Promise<Quest[]> =
   }
 }
 
-export const endCampaign = async (formData: FormData): Promise<void> => {
+export const endQuest = async (formData: FormData): Promise<void> => {
   // TODO: Implement this function
 }
 
@@ -98,5 +98,53 @@ export async function getCampaignDetails(slug: string): Promise<Quest | null> {
     return response.json() as Promise<Quest>
   } catch (error) {
     return null
+  }
+}
+
+export async function donateToQuest(
+  questId: string,
+  data: Partial<DonationPaymentRequest>
+): Promise<{
+  message: string
+  success: boolean
+}> {
+  try {
+    const response = await fetch(`${env.API_URL}/payments/card/${questId}/initiate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to initiate payment")
+    }
+
+    return { success: true, message: (await response.text()) as string }
+  } catch (error) {
+    return { message: (error as Error).message, success: false }
+  }
+}
+
+export async function completePayment(
+  questId: string,
+  data: Record<string, unknown>
+): Promise<{
+  message: string
+  success: boolean
+}> {
+  try {
+    const response = await fetch(`${env.API_URL}/payments/card/${questId}/complete`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to complete payment")
+    }
+
+    return { success: true, message: (await response.text()) as string }
+  } catch (error) {
+    return { message: (error as Error).message, success: false }
   }
 }

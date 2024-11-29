@@ -7,11 +7,13 @@ import { sendResetPasswordLink } from "app/actions/auth"
 import { Button } from "components/shared"
 import { useRouter } from "next/navigation"
 import { useNotificationStore } from "lib/stores/notification-store"
+import useBrowserStorage from "hooks/use-browser-storage"
 
 export default function Page() {
   const [hasSentResetLink, setHasSentResetLink] = useState(false)
   const [isPending, startTransition] = useTransition()
   const { addNotification } = useNotificationStore()
+  const { set } = useBrowserStorage("fdf-fp-email")
   const router = useRouter()
 
   const handleSendResetLink = async (formData: FormData) => {
@@ -21,6 +23,7 @@ export default function Page() {
         addNotification("error", result.message)
       } else {
         setHasSentResetLink(true)
+        set({ email: formData.get("email") as string })
       }
     })
   }

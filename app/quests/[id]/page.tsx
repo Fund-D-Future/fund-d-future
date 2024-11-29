@@ -1,3 +1,5 @@
+export const revalidate = 0
+
 import { AspectRatio, Badge, Box, Container, Flex, Text, Heading, Slider, Spinner } from "@radix-ui/themes"
 import { getUserData } from "app/actions/auth"
 import { getCampaignDetails } from "app/actions/quests"
@@ -21,6 +23,7 @@ export default async function Page({
   }
 }) {
   const details = await getCampaignDetails(params.id)
+  console.log(details)
   if (!details) {
     return notFound()
   }
@@ -151,7 +154,7 @@ export default async function Page({
           </Box>
         </Suspense>
         <aside className="flex-1 px-3 md:max-w-[400px]">
-          <RecentDonations />
+          <RecentDonations questId={params.id} />
           {/* Interactions Chart */}
         </aside>
       </Flex>

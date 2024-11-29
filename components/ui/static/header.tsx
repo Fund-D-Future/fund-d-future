@@ -4,7 +4,7 @@ import { RoutesMap } from "types/routes"
 
 export default function Header() {
   return (
-    <header className="absolute left-1/2 top-4 z-50 mx-auto flex w-full max-w-screen-lg -translate-x-1/2 items-center justify-between gap-5 rounded-full bg-white p-5 shadow-md">
+    <header className="absolute left-1/2 top-4 z-50 mx-auto flex w-full max-w-screen-xl -translate-x-1/2 items-center justify-between gap-5 rounded-full bg-white p-5 shadow-md">
       <Logo />
       <nav className="flex items-center gap-5">
         <Link href={RoutesMap.HOME} size="4" style={{ color: "#333333" }} weight="medium">
