@@ -90,7 +90,7 @@ export default function Page() {
             { id: "1", title: "Performance Bonus", amount: 50, currency: "USD", claimed: false, claimLink: "/claim/1" },
           ]}
         />
-        <RecentDonations />
+        {/* <RecentDonations  /> */}
       </Flex>
     </>
   )
