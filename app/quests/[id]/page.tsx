@@ -130,7 +130,7 @@ export default async function Page({
                   </Text>
                 </Flex>
               </Flex>
-              {user?.id === details.owner.id ? (
+              {user && user?.id === details.owner.id ? (
                 <>
                   <CampaignAnalysis
                     isAuthenticated={!!user}
