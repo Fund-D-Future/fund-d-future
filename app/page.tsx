@@ -3,13 +3,10 @@ import { Button } from "components/shared"
 import { Header, HowWeHelp } from "components/ui/static"
 import { RoutesMap } from "types/routes"
 import { constructMetadata } from "utils"
-import { getUserData } from "./actions/auth"
 
 export const metadata = constructMetadata({ title: "FundDFuture | Take control of your academic future" })
 
 export default async function Web() {
-  const user = await getUserData(false)
-
   return (
     <>
       {/* Hero section */}
@@ -47,7 +44,7 @@ export default async function Web() {
             community.
           </Text>
           <Flex gap="5" align="center" mt="3">
-            <Button href={!!user ? RoutesMap.DASHBOARD : RoutesMap.SIGNUP + "?role=student"} intent="primary" size="xl">
+            <Button href={RoutesMap.DASHBOARD} intent="primary" size="xl">
               Apply for Funding
             </Button>
             <Button href={RoutesMap.QUESTS} intent="secondary" size="xl" style={{ borderColor: "#fff", color: "#fff" }}>
