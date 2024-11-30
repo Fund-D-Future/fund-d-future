@@ -45,7 +45,8 @@ export interface UserBank {
   name: string
   slug: string
   code: string
-  country: string
-  currency: string
-  type: string
+}
+
+export interface PaystackUserBank extends UserBank {
+  longcode: string
 }

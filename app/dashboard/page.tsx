@@ -4,10 +4,12 @@ import { Box, Button, Container, Flex, Heading, Text } from "@radix-ui/themes"
 import { CampaignsPreview } from "components/icons"
 import { Button as InternalButton, WalletBalance, CampaignCard } from "components/shared"
 import { ProfileStrength, RewardsList } from "components/ui/dashboard"
+import WithdrawalPopup from "components/ui/dashboard/withdrawal"
 import { UserContext } from "components/user-provider"
+import { CurrencyService } from "lib/currency"
 import { Eye, EyeOff, Handshake } from "lucide-react"
 import { useContext, useEffect, useState } from "react"
-import { Quest } from "types/quest"
+import { Quest, QuestWallet } from "types/quest"
 import { RoutesMap } from "types/routes"
 import { dateHandler } from "utils"
 
@@ -15,6 +17,11 @@ export default function Page() {
   const [hideBalance, setHideBalance] = useState(false)
   const { user } = useContext(UserContext)
   const [activeQuests, setActiveQuests] = useState<Quest[]>([])
+  const [wallet, setWallet] = useState<QuestWallet>({
+    id: "",
+    balance: 0,
+    currency: "USD",
+  })
 
   useEffect(() => {
     setActiveQuests(
@@ -22,6 +29,23 @@ export default function Page() {
         dateHandler.isWithinDeadline(new Date().toISOString(), campaign.endDate)
       )
     )
+
+    if (user?.campaigns?.length) {
+      // this wallet will be used as the ultimatum and every other wallet will be subjected
+      // to currency conversion based on this wallet
+      const bossWallet = user.campaigns[0]!.wallet
+      const wallets = user.campaigns.slice(1).map((campaign) => campaign.wallet) // every other wallet
+
+      // convert every other wallet to the bossWallet currency and update the wallet
+      const service = CurrencyService.instantiate()
+      for (const wallet of wallets) {
+        service.convert(wallet.balance, wallet.currency, bossWallet.currency).then((convertedBalance) => {
+          bossWallet.balance += convertedBalance
+        })
+      }
+
+      setWallet(bossWallet)
+    }
   }, [user?.campaigns])
 
   return (
@@ -42,10 +66,8 @@ export default function Page() {
               {hideBalance ? <Eye color="white" size={16} /> : <EyeOff color="white" size={16} />}
             </Button>
           </Text>
-          <WalletBalance balance={0.569} currency="USD" showCurrency hide={hideBalance} />
-          <InternalButton intent="secondary" className="w-40 border-2 border-white text-white" size="lg">
-            Withdraw
-          </InternalButton>
+          <WalletBalance balance={wallet.balance} currency={wallet.currency} showCurrency hide={hideBalance} />
+          <WithdrawalPopup amount={wallet.balance} currency={wallet.currency} />
         </Flex>
       </Box>
       <Container className="mx-3 my-5 min-h-[300px] rounded-lg border border-[#0000001A] bg-white p-5 md:ml-0">

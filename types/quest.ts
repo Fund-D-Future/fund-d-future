@@ -14,17 +14,17 @@ export enum CampaignFeature {
   TECHNOLOGY_AND_INFRASTRUCTURE = "TECHNOLOGY_AND_INFRASTRUCTURE",
   MARKETING_AND_CUSTOMER_ACQUISITION = "MARKETING_AND_CUSTOMER_ACQUISITION",
   LEGAL_AND_COMPLIANCE_COSTS = "LEGAL_AND_COMPLIANCE_COSTS",
-  TEAM_DEVELOPMENT_AND_TRAINING ="TEAM_DEVELOPMENT_AND_TRAINING",
+  TEAM_DEVELOPMENT_AND_TRAINING = "TEAM_DEVELOPMENT_AND_TRAINING",
   BUSINESS_MENTORSHIP_PROGRAMS = "BUSINESS_MENTORSHIP_PROGRAMS",
 }
 
-export interface CampaignDonor {
+export interface QuestDonor {
   id: string
   amount: number
   timestamp: string
 }
 
-export interface CampaignFile {
+export interface QuestFile {
   id: string
   url: string
   key: string
@@ -33,11 +33,11 @@ export interface CampaignFile {
   updatedAt?: string
 }
 
-export interface CampaignWallet {
+export interface QuestWallet {
   id: string
   balance: number
   currency: CurrencyCode
-  campaign: string
+  campaign?: string
 }
 
 export interface Quest {
@@ -52,8 +52,8 @@ export interface Quest {
   startDate: string
   endDate: string
   owner: User
-  files: CampaignFile[]
-  wallet: CampaignWallet
+  files: QuestFile[]
+  wallet: QuestWallet
   createdAt: string
   updatedAt?: string
 }

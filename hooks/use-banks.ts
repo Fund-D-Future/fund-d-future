@@ -1,35 +1,30 @@
+import { useNotificationStore } from "lib/stores/notification-store"
 import { useEffect, useState } from "react"
-import { UserBank } from "types/user"
+import { PaystackUserBank, UserBank } from "types/user"
 
-export type UseBanksProps = {
-  perPage?: string
-  next?: string
-  previous?: string
-}
-
-export default function useBanks({ perPage = "40", next = "1", previous }: UseBanksProps) {
+export default function useBanks() {
   const [banks, setBanks] = useState<UserBank[]>([])
+  const { addNotification } = useNotificationStore()
 
   useEffect(() => {
-    const prepareQuery = (perPage: string, next: string, previous?: string) => {
-      const q = new URLSearchParams()
-      q.set("perPage", perPage)
-      q.set("next", next)
-      if (previous) {
-        q.set("previous", previous)
-      }
-
-      return q.toString()
-    }
-
-    fetch("/api/banks" + "?" + prepareQuery(perPage, next, previous))
+    fetch("/api/banks")
       .then((res) => res.json())
-      .then((data) => {
-        if ((data as any).status === "ok") {
-          setBanks((data as any).data)
+      .then((data: any) => {
+        if (data.status !== "ok") {
+          addNotification("error", data.message)
+          return
         }
+
+        const b = data.data as PaystackUserBank[]
+        setBanks(
+          b.map((bank) => ({
+            code: bank.longcode || bank.code,
+            slug: bank.slug,
+            name: bank.name,
+          }))
+        )
       })
-  }, [perPage, next, previous])
+  }, [])
 
   return banks
 }

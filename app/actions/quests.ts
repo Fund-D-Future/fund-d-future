@@ -148,3 +148,29 @@ export async function completePayment(
     return { message: (error as Error).message, success: false }
   }
 }
+
+export async function withdrawAmount(
+  questId: string,
+  data: {
+    accountName: string
+    accountNumber: string
+    bankCode: string
+    amount: number
+  }
+) {
+  try {
+    const response = await fetch(`${env.API_URL}/campaigns/${questId}/withdraw`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to withdraw")
+    }
+
+    return { success: true, message: (await response.text()) as string }
+  } catch (error) {
+    return { message: (error as Error).message, success: false }
+  }
+}

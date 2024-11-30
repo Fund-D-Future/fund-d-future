@@ -8,8 +8,8 @@ import { useState, useTransition } from "react"
 
 export default function Page() {
   const [isPending, startTransition] = useTransition()
-  const router = useRouter()
   const [code, setCode] = useState(Array(4).fill(""))
+  const router = useRouter()
 
   const handleCodeChange: (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => void = (index) => (e) => {
     const value = e.target.value
