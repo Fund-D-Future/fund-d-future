@@ -3,7 +3,7 @@
 import { Box, Button, Container, Flex, Heading, Text } from "@radix-ui/themes"
 import { CampaignsPreview } from "components/icons"
 import { Button as InternalButton, WalletBalance, CampaignCard } from "components/shared"
-import { ProfileStrength, RecentDonations, RewardsList } from "components/ui/dashboard"
+import { ProfileStrength, RewardsList } from "components/ui/dashboard"
 import { UserContext } from "components/user-provider"
 import { Eye, EyeOff, Handshake } from "lucide-react"
 import { useContext, useEffect, useState } from "react"

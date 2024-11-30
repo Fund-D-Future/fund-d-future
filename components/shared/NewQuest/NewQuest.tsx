@@ -3,11 +3,11 @@
 import { useFormState, useFormStatus } from "react-dom"
 import { Box, CheckboxCards, Dialog, Flex, RadioCards, Spinner, Text, TextArea, TextField } from "@radix-ui/themes"
 import { createNewQuest } from "app/actions/quests"
-import { Button, CurrencySelector, FileInput } from "components/shared"
+import { Button, CurrencySelector } from "components/shared"
 import { CheckCircle2 } from "lucide-react"
 import { useState } from "react"
 import { FormState, NewCampaignForm } from "lib/definitions"
-import { Quest, CampaignFeature } from "types/quest"
+import { CampaignFeature } from "types/quest"
 import { useNotificationStore } from "lib/stores/notification-store"
 
 const supportedCampaignDuration = [

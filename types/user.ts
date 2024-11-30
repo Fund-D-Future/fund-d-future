@@ -40,3 +40,12 @@ export interface AuthError {
   code?: string
   message: string
 }
+
+export interface UserBank {
+  name: string
+  slug: string
+  code: string
+  country: string
+  currency: string
+  type: string
+}
